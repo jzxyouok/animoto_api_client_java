@@ -43,9 +43,8 @@ public class DirectingJob extends BaseResource implements Jsonable {
     return newGson().toJson(new Container(this));
   }
 
-  public void handleHttpResponse(HttpResponse httpResponse, int expectedStatusCode) throws HttpExpectationException, ContractException, IOException {
-    super.handleHttpResponse(httpResponse, expectedStatusCode);
-    populateStoryboard();
+  protected boolean containsStoryboard() {
+    return true;
   }
 
   /**

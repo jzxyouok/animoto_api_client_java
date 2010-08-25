@@ -43,6 +43,9 @@ public class Payload {
     return getDirectingAndRenderingJob();
   }
 
+  /** 
+   * Get the associated BaseResource based on the Class you pass in.
+   */
   public BaseResource getBaseResource(Class clazz) {
     try {
       String name = "get" + clazz.getName().substring(clazz.getName().lastIndexOf ('.') + 1);

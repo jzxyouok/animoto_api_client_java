@@ -46,10 +46,12 @@ public class RenderingJob extends BaseResource implements Jsonable {
     return newGson().toJson(new Container(this));
   }
 
-  public void handleHttpResponse(HttpResponse httpResponse, int expectedStatusCode) throws HttpExpectationException, ContractException, IOException {
-    super.handleHttpResponse(httpResponse, expectedStatusCode);
-    populateStoryboard();
-    populateVideo();
+  protected boolean containsStoryboard() {
+    return true;
+  }
+
+  protected boolean containsVideo() {
+    return true;
   }
 
   /**

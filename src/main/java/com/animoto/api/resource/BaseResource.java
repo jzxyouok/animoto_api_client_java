@@ -39,6 +39,31 @@ public abstract class BaseResource implements Resource {
   protected Video video;
   protected Response response; 
 
+  /**
+   * Indicate if the resource should contain a Storyboard if complete. <p/>
+   * 
+   * Override to indicate if it does.
+   *
+   * @see DirectingJob
+   * @see RenderingJob
+   * @see DirectingAndRenderingJob
+   */
+  protected boolean containsStoryboard() {
+    return false;
+  }
+
+  /**
+   * Indicate if the resource should contain a Video if complete. <p/>
+   *
+   * Override to indiciate if it does.
+   *
+   * @see RenderingJob
+   * @see DirectingAndRenderingJob
+   */
+  protected boolean containsVideo() {
+    return false;
+  }
+
   public void setHttpCallback(String httpCallback) {
     this.httpCallback = httpCallback;
   }
@@ -208,21 +233,48 @@ public abstract class BaseResource implements Resource {
     int statusCode;
     String body;
     ApiResponse apiResponse;
-    BaseResource dtoBaseResource;
 
     statusCode = httpResponse.getStatusLine().getStatusCode();
     body = StringUtil.convertStreamToString(httpResponse.getEntity().getContent());
-    apiResponse = newGson().fromJson(body, ApiResponse.class);
+    apiResponse = fromJson(body);
     if (statusCode != expectedStatusCode) {
       throw new HttpExpectationException(statusCode, expectedStatusCode, body, apiResponse);
     }
-    response = apiResponse.getResponse();
-    dtoBaseResource = apiResponse.getResponse().getPayload().getBaseResource(this.getClass());
-    doErrorableBeanCopy(dtoBaseResource);
+    fromJson(body);
     setRequestId(httpResponse.getFirstHeader("x-animoto-request-id").getValue());
     if (getLocation() == null ||  StringUtil.isBlank(getLocation())) {
       throw new ContractException("Expected location URL to be present.");
     }
+  }
+
+  /**
+   * Allows you to populate this bean given a JSON from API.<p/>
+   * 
+   * Will call storyboard and video populate methods if expected by resource contract.<p/>
+   *
+   * @param       json
+   * @exception   ContractException
+   */
+  public ApiResponse fromJson(String json) throws ContractException {
+    ApiResponse apiResponse = newGson().fromJson(json, ApiResponse.class);
+    BaseResource dtoBaseResource ;
+
+    this.response = apiResponse.getResponse();
+    if (this.response == null || this.response.getPayload() == null) {
+      return apiResponse;
+    }
+
+    dtoBaseResource = getResponse().getPayload().getBaseResource(this.getClass());
+    doErrorableBeanCopy(dtoBaseResource);
+
+    if (containsStoryboard() == true) {
+      populateStoryboard();
+    }
+
+    if (containsVideo() == true) {
+      populateVideo();
+    }
+    return apiResponse;
   }
 
   /**
