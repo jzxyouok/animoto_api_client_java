@@ -228,14 +228,13 @@ JVM.
 <a name="how_to_contribute"></a>
 ## How to contribute to this client
 
-1. [Fork](http://help.github.com/forking/) `animoto_ruby_client`
+1. [Fork](http://help.github.com/forking/) `animoto/api_client_java`
 2. Create a topic branch - `git checkout -b my_branch`
 3. Push to your branch - `git push origin my_branch`
 4. Create an [Issue](http://github.com/animoto/api_client_java/issues) with a link to your branch
 5. That's it!
 
-You might want to checkout our [the wiki page](http://wiki.github.com/animoto/api_client_java) for information
-on coding standards, new features, etc.
+You might want to checkout our [the wiki page](http://wiki.github.com/animoto/api_client_java) for information on coding standards, new features, etc.
 
 [javadoc]: http://api.client.java.animoto.s3.amazonaws.com/apidocs/index.html
 [api_docs]: http://animoto.com/developer/api
