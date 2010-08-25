@@ -59,6 +59,11 @@ public abstract class BaseResource implements Resource {
     setLocation(url);
   }
 
+  /**
+   * Alias method for getLocation.
+   *
+   * @see #getLocation
+   */
   public String getUrl() {
     return getLocation();
   }
@@ -67,6 +72,9 @@ public abstract class BaseResource implements Resource {
     getLinks().put("self", location);
   }
 
+  /**
+   * Returns the URL of this resource as it is RESTfully represented on API.
+   */
   public String getLocation() {
     return links.get("self");
   }
@@ -75,6 +83,13 @@ public abstract class BaseResource implements Resource {
     this.state = state;
   }
 
+  /**
+   * Get the state of your resource on the API.
+   *
+   * @see #isPending
+   * @see #isCompleted
+   * @see #isFailed
+   */
   public String getState() {
     return state;
   }
@@ -83,18 +98,30 @@ public abstract class BaseResource implements Resource {
     this.requestId = requestId;
   }
 
+  /**
+   * Get the Animoto API Request ID that was used for your request. Useful for debugging and tracing with Animoto.
+   */
   public String getRequestId() {
     return requestId;
   }
 
+  /**
+   * True if the state is "failed" from API.
+   */
   public boolean isFailed() {
     return "failed".equals(state);
   }
 
+  /**
+   * Determines if a resource is pending on the API, that is, it is neither failed or completed.
+   */
   public boolean isPending() {
     return !isFailed() && !isCompleted();
   }
 
+  /**
+   * True if the state is "completed" from API.
+   */
   public boolean isCompleted() {
     return "completed".equals(state);
   }
@@ -161,10 +188,22 @@ public abstract class BaseResource implements Resource {
     return response;
   }
 
+  /**
+   * Utility method to create a new Gson parser for all child classes.
+   */
   protected Gson newGson() {
     return GsonUtil.create();
   }
 
+  /**
+   * Common handler to parse the HTTP response and deserialize all information into the the resource.
+   *
+   * @param httpResponse              The HttpResponse from HttpClient
+   * @param expectedStatusCode        The expected HTTP code we want from the API.
+   * @exception HttpExpectationException
+   * @exception ContractException
+   * @exception IOException
+   */
   public void handleHttpResponse(HttpResponse httpResponse, int expectedStatusCode) throws HttpExpectationException, ContractException, IOException {
     int statusCode;
     String body;
@@ -186,6 +225,13 @@ public abstract class BaseResource implements Resource {
     }
   }
 
+  /**
+   * Utility method to populate the job with a Storyboard resource if it is related to the resource.
+   *
+   * @see DirectingJob
+   * @see RenderingJob
+   * @see DirectingAndRenderingJob
+   */
   protected void populateStoryboard() throws ContractException {
     if (isCompleted()) {
       Storyboard storyboard = new Storyboard();
@@ -197,6 +243,12 @@ public abstract class BaseResource implements Resource {
     }
   }
 
+  /**
+   * Utility method to populate the job with a Videoresource if it is related to the resource.
+   *
+   * @see RenderingJob
+   * @see DirectingAndRenderingJob
+   */
   protected void populateVideo() throws ContractException {
     if (isCompleted()) {
       Video video = new Video();
@@ -208,6 +260,9 @@ public abstract class BaseResource implements Resource {
     }
   }
 
+  /**
+   * Saftey wrapper around Apache Bean Utils.
+   */
   private void doErrorableBeanCopy(Object bean) {
     try {
       BeanUtils.copyProperties(this, bean);
