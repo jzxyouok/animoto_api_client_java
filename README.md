@@ -32,8 +32,8 @@ provides a general overview of its use.
 This document does not cover the details of the Animoto API itself. For such
 information please see the [Animoto API documentation][api_docs]
 
-<a name="getting_started_using_the_ruby_client"></a>
-## Getting Started using the Ruby Client
+<a name="getting_started_using_the_java_client"></a>
+## Getting Started using the Java Client
 
 ### Requirements
 
