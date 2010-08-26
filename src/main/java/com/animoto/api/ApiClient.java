@@ -53,7 +53,7 @@ import java.io.UnsupportedEncodingException;
 public class ApiClient {
   private String key;
   private String secret;
-  private String host = "https://api2-staging.animoto.com";
+  private String host = "https://api2.animoto.com";
 
   /**
    * Default constructor. You will need to set a key and secret.
