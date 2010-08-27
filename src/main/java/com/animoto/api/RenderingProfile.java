@@ -2,6 +2,7 @@ package com.animoto.api;
 
 import com.animoto.api.enums.VerticalResolution;
 import com.animoto.api.enums.Format;
+import com.animoto.api.enums.Framerate;
 
 /**
  * A RenderingProfile contains video metadata of how you want API to render a video.<p/>
@@ -12,7 +13,7 @@ import com.animoto.api.enums.Format;
  */
 public class RenderingProfile {
   private VerticalResolution verticalResolution;
-  private Float framerate;
+  private Framerate framerate;
   private Format format;
 
   public void setVerticalResolution(VerticalResolution verticalResolution) {
@@ -23,11 +24,11 @@ public class RenderingProfile {
     return verticalResolution;
   }
 
-  public void setFramerate(Float framerate) {
+  public void setFramerate(Framerate framerate) {
     this.framerate = framerate;
   }
 
-  public Float getFramerate() {
+  public Framerate getFramerate() {
     return this.framerate;
   }
 

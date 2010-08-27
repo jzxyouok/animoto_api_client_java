@@ -116,7 +116,7 @@ This example shows you how to create a video in one shot using a
     RenderingProfile renderingProfile = new RenderingProfile();
 
     // Setup our rendering profile.
-    renderingProfile.setFramerate(new Float(30));
+    renderingProfile.setFramerate(Framerate.F_30);
     renderingProfile.setFormat(Format.H264);
     renderingProfile.setVerticalResolution(VerticalResolution.VR_720P);
 

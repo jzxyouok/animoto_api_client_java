@@ -1,7 +1,7 @@
 package com.animoto.api.enums;
 
 public enum Format {
-  FLV("flv"), H264("h264");
+ H264("h264"), ISO("iso");
 
   private String value;
 

@@ -27,6 +27,7 @@ import com.animoto.api.exception.HttpException;
 
 import com.animoto.api.enums.VerticalResolution;
 import com.animoto.api.enums.Format;
+import com.animoto.api.enums.Framerate;
 
 public class ApiClientIntegrationTest extends TestCase {
   protected ApiClient apiClient = null;
@@ -101,7 +102,7 @@ public class ApiClientIntegrationTest extends TestCase {
     RenderingManifest renderingManifest = new RenderingManifest();
     RenderingProfile renderingProfile = new RenderingProfile();
  
-    renderingProfile.setFramerate(new Float(1.23));
+    renderingProfile.setFramerate(Framerate.F_30);
     renderingManifest.setStoryboard(directingJob.getStoryboard());
     renderingManifest.setRenderingProfile(renderingProfile);
     try {
@@ -113,7 +114,7 @@ public class ApiClientIntegrationTest extends TestCase {
       assertEquals(400, e.getReceivedCode());
       assertNotNull(e.getApiErrors());
       assertNotNull(e.getBody());
-      assertEquals(5, e.getApiErrors().length);
+      assertEquals(4, e.getApiErrors().length);
     }
     catch (Exception e) {
       throw e;

@@ -9,7 +9,7 @@ public class RenderingManifestFactory {
     RenderingManifest renderingManifest = new RenderingManifest();
     RenderingProfile renderingProfile = new RenderingProfile();
 
-    renderingProfile.setFramerate(new Float(30));
+    renderingProfile.setFramerate(Framerate.F_30);
     renderingProfile.setFormat(Format.H264);
     renderingProfile.setVerticalResolution(VerticalResolution.VR_720P);
 

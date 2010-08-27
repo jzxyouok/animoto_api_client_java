@@ -72,6 +72,19 @@ public class ApiClient {
     this.secret = secret;
   }
 
+  /**
+   * Constructor
+   * 
+   * @param key
+   * @param secret
+   * @param host
+   */
+  public ApiClient(String key, String secret, String host) {
+    this.key = key;
+    this.secret = secret;
+    this.host = host;
+  }
+
   public void setKey(String key) {
     this.key = key;
   }
