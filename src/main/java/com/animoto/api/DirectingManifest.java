@@ -17,7 +17,6 @@ import com.animoto.api.enums.Style;
 public class DirectingManifest {
   private Visual[] visuals = new Visual[0];
   private String title;
-  private String producerName;
   private Pacing pacing = Pacing.DEFAULT;
   private Style style = Style.ORIGINAL;
   private Song song;
@@ -52,14 +51,6 @@ public class DirectingManifest {
 
   public String getTitle() {
     return title;
-  }
-
-  public void setProducerName(String producerName) {
-    this.producerName = producerName;
-  }
-
-  public String getProducerName() {
-    return producerName;
   }
 
   public void setPacing(Pacing pacing) {

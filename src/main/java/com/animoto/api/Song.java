@@ -9,8 +9,6 @@ public class Song {
   private String sourceUrl;
   private Float startTime;
   private Float duration;
-  private String title;
-  private String artist;
 
   /**
    * Set the HTTP URL to a valid MP3 file for your video.
@@ -37,21 +35,5 @@ public class Song {
 
   public Float getDuration() {
     return duration;
-  }
-
-  public void setTitle(String title) {
-    this.title = title;
-  }
-
-  public String getTitle() {
-    return title;
-  }
-
-  public void setArtist(String artist) {
-    this.artist = artist;
-  }
-
-  public String getArtist() {
-    return artist;
   }
 }

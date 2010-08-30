@@ -9,7 +9,7 @@ import com.animoto.api.resource.Storyboard;
  */
 public class RenderingManifest {
   private String storyboardUrl;
-  private RenderingProfile renderingProfile;
+  private RenderingParameters renderingParameters;
 
   /**
    * Set the Storyboard that is to be rendered by API.
@@ -30,13 +30,13 @@ public class RenderingManifest {
   }
 
   /**
-   * Set the RenderingProfile for the render request to API.
+   * Set the RenderingParameters for the render request to API.
    */
-  public void setRenderingProfile(RenderingProfile renderingProfile) {
-    this.renderingProfile = renderingProfile;
+  public void setRenderingParameters(RenderingParameters renderingParameters) {
+    this.renderingParameters = renderingParameters;
   }
 
-  public RenderingProfile getRenderingProfile() {
-    return renderingProfile;
+  public RenderingParameters getRenderingParameters() {
+    return renderingParameters;
   }
 }

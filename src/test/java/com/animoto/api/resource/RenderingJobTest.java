@@ -27,7 +27,7 @@ public class RenderingJobTest extends TestCase {
     /*
       Let's use JSON Simple to parse the JSON and validate it's correctness.
      */   
-    JSONObject jsonObject, jsonRenderingJob, jsonRenderingManifest, jsonRenderingProfile;
+    JSONObject jsonObject, jsonRenderingJob, jsonRenderingManifest, jsonRenderingParameters;
     jsonObject = (JSONObject) new JSONParser().parse(json);
     jsonRenderingJob = (JSONObject) jsonObject.get("rendering_job");
     assertEquals("http://partner.com/some/callback", jsonRenderingJob.get("http_callback"));
@@ -36,10 +36,10 @@ public class RenderingJobTest extends TestCase {
     jsonRenderingManifest = (JSONObject) jsonRenderingJob.get("rendering_manifest");
     assertEquals("http://animoto.com/storyboard/123", jsonRenderingManifest.get("storyboard_url"));
 
-    jsonRenderingProfile = (JSONObject) jsonRenderingManifest.get("rendering_profile");
-    assertEquals(30.0, jsonRenderingProfile.get("framerate")); 
-    assertEquals("h264", jsonRenderingProfile.get("format"));
-    assertEquals("720p", jsonRenderingProfile.get("vertical_resolution"));
+    jsonRenderingParameters = (JSONObject) jsonRenderingManifest.get("rendering_parameters");
+    assertEquals(30.0, jsonRenderingParameters.get("framerate")); 
+    assertEquals("h264", jsonRenderingParameters.get("format"));
+    assertEquals("720p", jsonRenderingParameters.get("resolution"));
   } 
 
   public void testErrorParsing() {

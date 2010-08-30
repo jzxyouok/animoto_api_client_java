@@ -13,6 +13,7 @@ public class Footage extends BaseVisual {
   private AudioMix audioMix = AudioMix.NONE;
   private Float startTime = new Float(0);
   private Float duration;
+  private boolean cover = false;
 
   public Footage() {
     visualType = VisualType.FOOTAGE;
@@ -60,6 +61,17 @@ public class Footage extends BaseVisual {
 
   public Float getDuration() {
     return duration;
+  }
+
+  /**
+   * Set whether this Footage should be used for the cover. Only one Image or Footage can be cover.
+   */
+  public void setCover(boolean cover) {
+    this.cover = cover;
+  }
+
+  public boolean isCover() {
+    return this.cover;
   }
 }
   

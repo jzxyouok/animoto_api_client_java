@@ -16,7 +16,7 @@ import com.animoto.api.resource.Video;
 
 import com.animoto.api.DirectingManifest;
 import com.animoto.api.RenderingManifest;
-import com.animoto.api.RenderingProfile;
+import com.animoto.api.RenderingParameters;
 
 import com.animoto.api.visual.TitleCard;
 import com.animoto.api.visual.Image;
@@ -25,8 +25,6 @@ import com.animoto.api.exception.ApiException;
 import com.animoto.api.exception.HttpExpectationException;
 import com.animoto.api.exception.HttpException;
 
-import com.animoto.api.enums.VerticalResolution;
-import com.animoto.api.enums.Format;
 import com.animoto.api.enums.Framerate;
 
 public class ApiClientIntegrationTest extends TestCase {
@@ -100,11 +98,11 @@ public class ApiClientIntegrationTest extends TestCase {
     DirectingJob directingJob = createDirectingJob();
     RenderingJob renderingJob = null;
     RenderingManifest renderingManifest = new RenderingManifest();
-    RenderingProfile renderingProfile = new RenderingProfile();
+    RenderingParameters renderingParameters = new RenderingParameters();
  
-    renderingProfile.setFramerate(Framerate.F_30);
+    renderingParameters.setFramerate(Framerate.F_30);
     renderingManifest.setStoryboard(directingJob.getStoryboard());
-    renderingManifest.setRenderingProfile(renderingProfile);
+    renderingManifest.setRenderingParameters(renderingParameters);
     try {
       renderingJob = apiClient.render(renderingManifest);
       fail("Expected error from API!");

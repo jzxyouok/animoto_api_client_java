@@ -106,30 +106,28 @@ This example shows you how to create a video in one shot using a
     footage.setSourceUrl("http://api.client.java.animoto.s3.amazonaws.com/test_assets/footage.mp4");
     directingManifest.addVisual(footage);
 
-    // Set the video title and producer name
+    // Set the video title
     directingManifest.setTitle("My Animoto Video");
-    directingManifest.setProducerName("Animoto");
 
     // Create a rendering manifest to control things like video resolution and 
     // framerate
     RenderingManifest renderingManifest = new RenderingManifest();
-    RenderingProfile renderingProfile = new RenderingProfile();
+    RenderingParameters renderingParameters = new RenderingParameters();
 
     // Setup our rendering profile.
-    renderingProfile.setFramerate(Framerate.F_30);
-    renderingProfile.setFormat(Format.H264);
-    renderingProfile.setVerticalResolution(VerticalResolution.VR_720P);
+    renderingParameters.setFramerate(Framerate.F_30);
+    renderingParameters.setFormat(Format.H264);
+    renderingParameters.setResolution(Resolution.VR_720P);
 
     // Set the storyboard from the Directing Job into the Rendering Manifest.
-    renderingManifest.setRenderingProfile(renderingProfile);
+    renderingManifest.setRenderingParameters(renderingParameters);
     renderingManifest.setStoryboard(directingJob.getStoryboard());
 
     // Send the job to the API.  Status updates will be communicated via a 
     // HTTP POST to "http://mysite.com/animoto_callback"
     httpCallbackUrl = "http://mysite.com/animoto_callback"
-    httpCallbackFormat = "json"
     DirectingAndRenderingJob directingAndRenderingJob = null
-    directingAndRenderingJob = apiClient.directAndRender(directingManifest, renderingManifest, httpCallbackUrl, httpCallbackFormat)
+    directingAndRenderingJob = apiClient.directAndRender(directingManifest, renderingManifest, httpCallbackUrl, HttpCallbackFormat.JSON)
 
 ### Rendering an existing Storyboard
 
@@ -138,15 +136,15 @@ tell the API to render a video.
 
     RenderingJob renderingJob = null;
     RenderingManifest renderingManifest = new RenderingManifest();
-    RenderingProfile renderingProfile = new RenderingProfile();
+    RenderingParameters renderingParameters = new RenderingParameters();
 
     // Setup our rendering profile.
-    renderingProfile.setFramerate(new Float(30));
-    renderingProfile.setFormat(Format.H264);
-    renderingProfile.setVerticalResolution(VerticalResolution.VR_720P);
+    renderingParameters.setFramerate(new Float(30));
+    renderingParameters.setFormat(Format.H264);
+    renderingParameters.setResolution(Resolution.VR_720P);
 
     // Set the storyboard from the Directing Job into the Rendering Manifest.
-    renderingManifest.setRenderingProfile(renderingProfile);
+    renderingManifest.setRenderingParameters(renderingParameters);
     renderingManifest.setStoryboard(directingJob.getStoryboard());
     renderingJob = apiClient.render(renderingManifest);
 

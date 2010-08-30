@@ -15,14 +15,13 @@ public class DirectingManifestFactory {
     String json = null;
 
     song.setSourceUrl("http://api.client.java.animoto.s3.amazonaws.com/test_assets/song.mp3");
-    song.setTitle("Song 2");
-    song.setArtist("Blur");
     song.setDuration(new Float(120));
     song.setStartTime(new Float(5));
     directingManifest.setSong(song);
 
     image.setSourceUrl("http://api.client.java.animoto.s3.amazonaws.com/test_assets/image.jpg");
     image.setRotation(ExifOrientation.TWO);
+    image.setCover(true);
     directingManifest.addVisual(image);
 
     titleCard.setH1("hello");
@@ -34,7 +33,6 @@ public class DirectingManifestFactory {
     directingManifest.addVisual(footage);
 
     directingManifest.setTitle("My Animoto Video");
-    directingManifest.setProducerName("Animoto");
     directingManifest.setPacing(Pacing.HALF);
     return directingManifest;
   }

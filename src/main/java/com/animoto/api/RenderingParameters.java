@@ -1,27 +1,27 @@
 package com.animoto.api;
 
-import com.animoto.api.enums.VerticalResolution;
+import com.animoto.api.enums.Resolution;
 import com.animoto.api.enums.Format;
 import com.animoto.api.enums.Framerate;
 
 /**
- * A RenderingProfile contains video metadata of how you want API to render a video.<p/>
+ * A RenderingParameters contains video metadata of how you want API to render a video.<p/>
  *
  * It is part of the RenderingManifest.<p/>
  *
  * @see RenderingManifest
  */
-public class RenderingProfile {
-  private VerticalResolution verticalResolution;
+public class RenderingParameters {
+  private Resolution resolution;
   private Framerate framerate;
   private Format format;
 
-  public void setVerticalResolution(VerticalResolution verticalResolution) {
-    this.verticalResolution = verticalResolution;
+  public void setResolution(Resolution resolution) {
+    this.resolution = resolution;
   }
 
-  public VerticalResolution getVerticalResolution() {
-    return verticalResolution;
+  public Resolution getResolution() {
+    return resolution;
   }
 
   public void setFramerate(Framerate framerate) {

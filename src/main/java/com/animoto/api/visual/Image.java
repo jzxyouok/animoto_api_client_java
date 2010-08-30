@@ -14,6 +14,7 @@ public class Image extends BaseVisual {
   private Boolean spotlit;
   private ExifOrientation rotation;
   private String sourceUrl;
+  private boolean cover;
 
   public Image() {
     visualType = VisualType.IMAGE;
@@ -50,5 +51,16 @@ public class Image extends BaseVisual {
 
   public String getSourceUrl() {
     return sourceUrl;
+  }
+
+  /**
+   * Set whether this Footage should be used for the cover. Only one Image or Footage can be cover.
+   */
+  public void setCover(boolean cover) {
+    this.cover = cover;
+  }
+
+  public boolean isCover() {
+    return this.cover;
   }
 }

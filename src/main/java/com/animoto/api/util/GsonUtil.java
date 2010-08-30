@@ -12,7 +12,7 @@ public class GsonUtil {
     gsonBuilder.registerTypeAdapter(Style.class, new ValueSerializer());
     gsonBuilder.registerTypeAdapter(VisualType.class, new ValueSerializer());
     gsonBuilder.registerTypeAdapter(ExifOrientation.class, new ValueSerializer());
-    gsonBuilder.registerTypeAdapter(VerticalResolution.class, new ValueSerializer());
+    gsonBuilder.registerTypeAdapter(Resolution.class, new ValueSerializer());
     gsonBuilder.registerTypeAdapter(Format.class, new ValueSerializer());
     gsonBuilder.registerTypeAdapter(Framerate.class, new ValueSerializer());
     return gsonBuilder.create();

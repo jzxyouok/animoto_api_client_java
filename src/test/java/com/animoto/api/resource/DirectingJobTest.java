@@ -71,13 +71,10 @@ public class DirectingJobTest extends TestCase {
     jsonDirectingManifest = (JSONObject) jsonDirectingJob.get("directing_manifest");
     assertEquals("original", jsonDirectingManifest.get("style"));
     assertEquals("My Animoto Video", jsonDirectingManifest.get("title"));
-    assertEquals("Animoto", jsonDirectingManifest.get("producer_name"));
     assertEquals("HALF", jsonDirectingManifest.get("pacing"));
 
     jsonSong = (JSONObject) jsonDirectingManifest.get("song");
     assertEquals("http://api.client.java.animoto.s3.amazonaws.com/test_assets/song.mp3", jsonSong.get("source_url"));
-    assertEquals("Song 2", jsonSong.get("title"));
-    assertEquals("Blur", jsonSong.get("artist"));
     assertEquals(120.0, jsonSong.get("duration"));
     assertEquals(5.0, jsonSong.get("start_time"));
     
@@ -88,10 +85,12 @@ public class DirectingJobTest extends TestCase {
       if (jsonVisual.get("type").equals("image")) {
         assertEquals(2, ((Number) jsonVisual.get("rotation")).intValue());
         assertEquals("http://api.client.java.animoto.s3.amazonaws.com/test_assets/image.jpg", jsonVisual.get("source_url"));
+        assertEquals(true, jsonVisual.get("cover"));
       }
       else if (jsonVisual.get("type").equals("footage")) {
         assertEquals("MIX", jsonVisual.get("audio_mix"));  
         assertEquals("http://api.client.java.animoto.s3.amazonaws.com/test_assets/footage.mp4", jsonVisual.get("source_url"));
+        assertEquals(false, jsonVisual.get("cover"));
       }
       else if (jsonVisual.get("type").equals("title_card")) {
         assertEquals("hello", jsonVisual.get("h1"));
