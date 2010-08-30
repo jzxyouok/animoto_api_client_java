@@ -53,21 +53,21 @@ public class ApiClientCli extends ApiClient {
       if (commandLine.hasOption("create-directing-job")) {
         doApiPost(new RawDirectingJob(), commandLine.getOptionValue("create-directing-job"), new PostCliCallback() {
           public void doCallback(Resource resource) throws Exception {
-            apiClient.direct((DirectingJob) resource, null, null);
+            apiClient.direct((DirectingJob) resource, null, null, null, null);
           }
         });
       }
       else if (commandLine.hasOption("create-rendering-job")) {
         doApiPost(new RawRenderingJob(), commandLine.getOptionValue("create-rendering-job"), new PostCliCallback() {
           public void doCallback(Resource resource) throws Exception {
-            apiClient.render((RenderingJob) resource, null, null);
+            apiClient.render((RenderingJob) resource, null, null, null, null);
           }
         });
       }
       else if (commandLine.hasOption("create-directing-and-rendering-job")) {
         doApiPost(new RawDirectingAndRenderingJob(), commandLine.getOptionValue("create-directing-and-rendering-job"), new PostCliCallback() {
           public void doCallback(Resource resource) throws Exception {
-            apiClient.directAndRender((DirectingAndRenderingJob) resource, null, null);
+            apiClient.directAndRender((DirectingAndRenderingJob) resource, null, null, null, null);
           }
         });
       }
