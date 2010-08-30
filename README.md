@@ -117,7 +117,7 @@ This example shows you how to create a video in one shot using a
     // Setup our rendering profile.
     renderingParameters.setFramerate(Framerate.F_30);
     renderingParameters.setFormat(Format.H264);
-    renderingParameters.setResolution(Resolution.VR_720P);
+    renderingParameters.setResolution(Resolution.R_720P);
 
     // Set the storyboard from the Directing Job into the Rendering Manifest.
     renderingManifest.setRenderingParameters(renderingParameters);
@@ -139,9 +139,9 @@ tell the API to render a video.
     RenderingParameters renderingParameters = new RenderingParameters();
 
     // Setup our rendering profile.
-    renderingParameters.setFramerate(new Float(30));
+    renderingParameters.setFramerate(Framerate.F_30);
     renderingParameters.setFormat(Format.H264);
-    renderingParameters.setResolution(Resolution.VR_720P);
+    renderingParameters.setResolution(Resolution.R_720P);
 
     // Set the storyboard from the Directing Job into the Rendering Manifest.
     renderingManifest.setRenderingParameters(renderingParameters);
