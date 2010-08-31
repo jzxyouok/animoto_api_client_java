@@ -3,6 +3,10 @@ package com.animoto.api;
 import junit.framework.TestCase;
 
 import java.util.Iterator;
+import java.util.List;
+import java.util.ArrayList;
+
+import org.apache.http.HttpRequestInterceptor;
 
 import com.animoto.api.util.DirectingManifestFactory;
 import com.animoto.api.util.RenderingManifestFactory;
@@ -66,6 +70,16 @@ public class ApiClientIntegrationTest extends TestCase {
     catch (Exception e) {
       fail(e.toString());
     }
+  }
+
+  public void testDirectingInterceptor() throws Exception {
+    DirectingManifest directingManifest = DirectingManifestFactory.newInstance();
+    List<HttpRequestInterceptor> list = new ArrayList<HttpRequestInterceptor>();
+    DummyHttpRequestInterceptor interceptor = new DummyHttpRequestInterceptor();
+
+    list.add(interceptor);
+    apiClient.direct(directingManifest, null, null, null, list);
+    assertTrue(interceptor.isVisited());
   }
 
   public void testDirectingFail() throws Exception {
