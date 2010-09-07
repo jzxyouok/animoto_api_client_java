@@ -1,6 +1,6 @@
 package com.animoto.api.visual;
 
-import com.animoto.api.enums.ExifOrientation;
+import com.animoto.api.enums.Rotation;
 import com.animoto.api.enums.VisualType;
 
 /**
@@ -12,7 +12,7 @@ import com.animoto.api.enums.VisualType;
  */
 public class Image extends BaseVisual {
   private Boolean spotlit;
-  private ExifOrientation rotation;
+  private Rotation rotation;
   private String sourceUrl;
   private boolean cover;
 
@@ -32,13 +32,13 @@ public class Image extends BaseVisual {
   }
 
   /**
-   * Set the EXIF Orientation for the image.
+   * Set the rotation for the image.
    */
-  public void setRotation(ExifOrientation rotation) {
+  public void setRotation(Rotation rotation) {
     this.rotation = rotation;
   }
 
-  public ExifOrientation getRotation() {
+  public Rotation getRotation() {
     return rotation;
   }
 

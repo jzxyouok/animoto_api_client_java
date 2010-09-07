@@ -20,7 +20,7 @@ public class DirectingManifestFactory {
     directingManifest.setSong(song);
 
     image.setSourceUrl("http://api.client.java.animoto.s3.amazonaws.com/test_assets/image.jpg");
-    image.setRotation(ExifOrientation.TWO);
+    image.setRotation(Rotation.TWO);
     image.setCover(true);
     directingManifest.addVisual(image);
 

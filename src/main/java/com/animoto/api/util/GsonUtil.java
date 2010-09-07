@@ -11,7 +11,7 @@ public class GsonUtil {
     gsonBuilder.setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES);
     gsonBuilder.registerTypeAdapter(Style.class, new ValueSerializer());
     gsonBuilder.registerTypeAdapter(VisualType.class, new ValueSerializer());
-    gsonBuilder.registerTypeAdapter(ExifOrientation.class, new ValueSerializer());
+    gsonBuilder.registerTypeAdapter(Rotation.class, new ValueSerializer());
     gsonBuilder.registerTypeAdapter(Resolution.class, new ValueSerializer());
     gsonBuilder.registerTypeAdapter(Format.class, new ValueSerializer());
     gsonBuilder.registerTypeAdapter(Framerate.class, new ValueSerializer());
