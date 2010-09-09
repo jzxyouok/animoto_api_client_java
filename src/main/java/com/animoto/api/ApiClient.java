@@ -59,7 +59,7 @@ import java.io.UnsupportedEncodingException;
 public class ApiClient {
   private String key;
   private String secret;
-  private String host = "https://api2.animoto.com";
+  private String host = "https://api.animoto.com";
   private static final Log logger = LogFactory.getLog(ApiClient.class);
 
   public static Log getLogger() {
