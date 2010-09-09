@@ -124,9 +124,9 @@ This example shows you how to create a video in one shot using a
 
     // Send the job to the API.  Status updates will be communicated via a 
     // HTTP POST to "http://mysite.com/animoto_callback"
-    httpCallbackUrl = "http://mysite.com/animoto_callback"
-    DirectingAndRenderingJob directingAndRenderingJob = null
-    directingAndRenderingJob = apiClient.directAndRender(directingManifest, renderingManifest, httpCallbackUrl, HttpCallbackFormat.JSON)
+    String httpCallbackUrl = "http://mysite.com/animoto_callback";
+    DirectingAndRenderingJob directingAndRenderingJob = null;
+    directingAndRenderingJob = apiClient.directAndRender(directingManifest, renderingManifest, httpCallbackUrl, HttpCallbackFormat.JSON);
 
 ### Rendering an existing Storyboard
 
