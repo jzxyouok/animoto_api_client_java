@@ -88,6 +88,14 @@ public class ApiClient {
     this.host = host;
   }
 
+  public String getVersion() {
+    return "1.0-SNAPSHOT";
+  }
+
+  public String getUserAgent() {
+    return "Animoto Java API Client - " + getVersion();
+  }
+
   public void setKey(String key) {
     this.key = key;
   }
@@ -339,6 +347,7 @@ public class ApiClient {
     try {
       headers.put("Content-Type", baseResource.getContentType());
       headers.put("Accept", baseResource.getAccept());
+      headers.put("User-Agent", getUserAgent());
       httpResponse = doHttpPost(host + "/jobs/" + context, ((Jsonable) baseResource).toJson(), headers, httpRequestRetryHandler, httpRequestInterceptors);
     }
     catch (IOException e) {

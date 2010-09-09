@@ -14,8 +14,7 @@ with the Animoto RESTful HTTP API.
 * [Getting Started using the Java Client](#getting_started_using_the_java_client)
 * [How to contribute to this client](#how_to_contribute)
 
-For for detailed Java client documentation, see the 
-[java client javadocs][javadoc]
+For for detailed Java client documentation, see the [java client javadocs][javadoc].
 
 <a name="who_should_read_this_document"></a>
 ## Who should read this document?
@@ -30,7 +29,7 @@ This document covers the technical details of the Animoto API Java client and
 provides a general overview of its use.
 
 This document does not cover the details of the Animoto API itself. For such
-information please see the [Animoto API documentation][api_docs]
+information please see the [Animoto API documentation][api_docs].
 
 <a name="getting_started_using_the_java_client"></a>
 ## Getting Started using the Java Client
@@ -226,13 +225,13 @@ JVM.
 <a name="how_to_contribute"></a>
 ## How to contribute to this client
 
-1. [Fork](http://help.github.com/forking/) `animoto/api_client_java`
+1. [Fork](http://help.github.com/forking/) `animoto/animoto_api_client_java`
 2. Create a topic branch - `git checkout -b my_branch`
 3. Push to your branch - `git push origin my_branch`
-4. Create an [Issue](http://github.com/animoto/api_client_java/issues) with a link to your branch
+4. Create an [Issue](http://github.com/animoto/animoto_api_client_java/issues) with a link to your branch
 5. That's it!
 
-You might want to checkout our [the wiki page](http://wiki.github.com/animoto/api_client_java) for information on coding standards, new features, etc.
+You might want to checkout our [the wiki page](http://wiki.github.com/animoto/animoto_api_client_java) for information on coding standards, new features, etc.
 
 [javadoc]: http://api.client.java.animoto.s3.amazonaws.com/apidocs/index.html
 [api_docs]: http://animoto.com/developer/api
