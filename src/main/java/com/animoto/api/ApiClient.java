@@ -32,6 +32,9 @@ import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.entity.StringEntity;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
@@ -57,6 +60,11 @@ public class ApiClient {
   private String key;
   private String secret;
   private String host = "https://api2.animoto.com";
+  private static final Log logger = LogFactory.getLog(ApiClient.class);
+
+  public static Log getLogger() {
+    return logger;
+  }
 
   /**
    * Default constructor. You will need to set a key and secret.
@@ -347,7 +355,6 @@ public class ApiClient {
     try {
       headers.put("Content-Type", baseResource.getContentType());
       headers.put("Accept", baseResource.getAccept());
-      headers.put("User-Agent", getUserAgent());
       httpResponse = doHttpPost(host + "/jobs/" + context, ((Jsonable) baseResource).toJson(), headers, httpRequestRetryHandler, httpRequestInterceptors);
     }
     catch (IOException e) {
@@ -365,6 +372,7 @@ public class ApiClient {
       key = (String) it.next();
       httpRequestBase.addHeader(key, headers.get(key));
     }
+    httpRequestBase.addHeader("User-Agent", getUserAgent());
 
     // Register the retry handler
     if (httpRequestRetryHandler != null) {

@@ -1,5 +1,6 @@
 package com.animoto.api.resource;
 
+import com.animoto.api.ApiClient;
 import com.animoto.api.enums.HttpCallbackFormat;
 import com.animoto.api.util.GsonUtil;
 import com.animoto.api.util.StringUtil;
@@ -237,6 +238,7 @@ public abstract class BaseResource implements Resource {
     statusCode = httpResponse.getStatusLine().getStatusCode();
     body = StringUtil.convertStreamToString(httpResponse.getEntity().getContent());
     apiResponse = fromJson(body);
+    ApiClient.getLogger().info("resource [" + getLocation() +"] received [" + statusCode + "] and expected [" + expectedStatusCode + "]");
     if (statusCode != expectedStatusCode) {
       throw new HttpExpectationException(statusCode, expectedStatusCode, body, apiResponse);
     }
