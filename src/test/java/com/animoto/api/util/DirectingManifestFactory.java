@@ -12,7 +12,6 @@ public class DirectingManifestFactory {
     TitleCard titleCard = new TitleCard();
     Footage footage = new Footage();
     Song song = new Song();
-    String json = null;
 
     song.setSourceUrl("http://api.client.java.animoto.s3.amazonaws.com/test_assets/song.mp3");
     song.setDuration(new Float(120));

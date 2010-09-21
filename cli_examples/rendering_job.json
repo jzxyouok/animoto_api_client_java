@@ -1,1 +1,1 @@
-{"rendering_job":{"rendering_manifest":{"storyboard_url":"https://api2-staging.animoto.com/storyboards/4c72bacb43707c249e000001","rendering_profile":{"vertical_resolution":"720p","framerate":30.0,"format":"h264"}},"http_callback_format":"XML","links":{},"metadata":{}}}
+{"rendering_job":{"rendering_manifest":{"storyboard_url":"https://api2-sandbox.animoto.com/storyboards/4c991a5c31dca31df7000001","rendering_parameters":{"resolution":"720p","framerate":30,"format":"h264"}}}}

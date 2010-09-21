@@ -33,22 +33,27 @@ public class ApiClientCli extends ApiClient {
     RawDirectingJob rawDirectingJob = null;
     RawRenderingJob rawRenderingJob = null;
     RawDirectingAndRenderingJob rawDirectingAndRenderingJob = null;
-    String key, secret;
-
+    String key, secret, host;
+    
     try {
       commandLine = parser.parse(options, args);
       if (args.length == 0 || commandLine.hasOption("help")) {
         new HelpFormatter().printHelp("animoto-api", options);
+        return;
       }
 
       key = commandLine.getOptionValue("key");
       secret = commandLine.getOptionValue("secret");
+      host = commandLine.getOptionValue("host");
       if (StringUtil.isBlank(key) || StringUtil.isBlank(secret)) {
         throw new Error("Must provide an API key and secret.");
       }
       apiClient = new ApiClientCli();
       apiClient.setKey(key);
       apiClient.setSecret(secret);
+      if (host != null) {
+        apiClient.setHost(host);
+      }
 
       if (commandLine.hasOption("create-directing-job")) {
         doApiPost(new RawDirectingJob(), commandLine.getOptionValue("create-directing-job"), new PostCliCallback() {
@@ -118,6 +123,7 @@ public class ApiClientCli extends ApiClient {
     options.addOption("cd", "create-directing-job", true, "The file with JSON payload you want to POST to API to create a directing job.");
     options.addOption("cdr", "create-directing-and-rendering-job", true, "The file with JSON payload you want to POST to API to create a directing_and_rendering job");
     options.addOption("h", "help", false, "Print CLI help");
+    options.addOption("t", "host", true, "The API host to communicate to (default: https://api.animoto.com)."); 
     return options;
   }
 
