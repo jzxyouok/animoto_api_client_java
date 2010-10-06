@@ -52,7 +52,7 @@ import java.io.UnsupportedEncodingException;
  * 
  * @author  SunDawg
  * @since   1.0
- * @version 1.0
+ * @version 1.1
  *
  * @see ApiClientFactory
  */
@@ -138,7 +138,7 @@ public class ApiClient {
    * @exception   ContractException
    */
   public DirectingJob direct(DirectingManifest directingManifest) throws HttpExpectationException, HttpException, ContractException {
-    return direct(directingManifest, null, null);
+    return direct(directingManifest, new ApiCommand());
   }
 
   /**
@@ -152,11 +152,14 @@ public class ApiClient {
    * @exception   ContractException
    */
   public DirectingJob direct(DirectingManifest directingManifest, String httpCallback, HttpCallbackFormat httpCallbackFormat) throws HttpExpectationException, HttpException, ContractException {
-    return direct(directingManifest, httpCallback, httpCallbackFormat, null, null);
+    ApiCommand apiCommand = new ApiCommand();
+    apiCommand.setHttpCallback(httpCallback);
+    apiCommand.setHttpCallbackFormat(httpCallbackFormat);
+    return direct(directingManifest, apiCommand);
   }
 
   /**
-   * Creates a directing job with http callbacks.
+   * Creates a directing job with http callbacks, retry handler, and request interceptors.
    *
    * @param       directingManifest           The manifest payload to direct.
    * @param       httpCallback                The callback URL the API will communicate back to.
@@ -168,16 +171,35 @@ public class ApiClient {
    * @exception   ContractException
    */
   public DirectingJob direct(DirectingManifest directingManifest, String httpCallback, HttpCallbackFormat httpCallbackFormat, HttpRequestRetryHandler httpRequestRetryHandler, Collection<HttpRequestInterceptor> httpRequestInterceptors) throws HttpExpectationException, HttpException, ContractException {
-    DirectingJob directingJob = new DirectingJob();
-    directingJob.setDirectingManifest(directingManifest);
-    direct(directingJob, httpCallback, httpCallbackFormat, httpRequestRetryHandler, httpRequestInterceptors);
-    return directingJob;
+    ApiCommand apiCommand = new ApiCommand();
+    apiCommand.setHttpCallback(httpCallback);
+    apiCommand.setHttpCallbackFormat(httpCallbackFormat);
+    apiCommand.setHttpRequestRetryHandler(httpRequestRetryHandler);
+    apiCommand.setHttpRequestInterceptors(httpRequestInterceptors);
+    return direct(directingManifest, apiCommand);
   }
 
-  protected void direct(DirectingJob directingJob, String httpCallback, HttpCallbackFormat httpCallbackFormat, HttpRequestRetryHandler httpRequestRetryHandler, Collection<HttpRequestInterceptor> httpRequestInterceptors) throws HttpExpectationException, HttpException, ContractException {
-    HttpResponse httpResponse = doApiHttpPost(directingJob, "directing", httpCallback, httpCallbackFormat, httpRequestRetryHandler, httpRequestInterceptors);
+  /**
+   * Creates a directing job with command object.
+   * 
+   * @param       directingManifest
+   * @param       apiCommand
+   * @exception   HttpExpectationException
+   * @exception   HttpExpectation
+   * @exception   ContractException
+   */
+  public DirectingJob direct(DirectingManifest directingManifest, ApiCommand apiCommand) throws HttpExpectationException, HttpException, ContractException {
+    DirectingJob directingJob = new DirectingJob();
+    directingJob.setDirectingManifest(directingManifest);
+    apiCommand.setBaseResource(directingJob);
+    executeApiCommandAndExpectHttp201(apiCommand);
+    return directingJob;
+  } 
+
+  protected void executeApiCommandAndExpectHttp201(ApiCommand apiCommand) throws HttpExpectationException, HttpException, ContractException {
+    HttpResponse httpResponse = doApiHttpPost(apiCommand);
     try {
-      directingJob.handleHttpResponse(httpResponse, 201);
+      apiCommand.getBaseResource().handleHttpResponse(httpResponse, 201);
     }
     catch (IOException e) {
       throw new HttpException(e);
@@ -193,7 +215,7 @@ public class ApiClient {
    * @exception   ContractException
    */
   public RenderingJob render(RenderingManifest renderingManifest) throws HttpExpectationException, HttpException, ContractException {
-    return render(renderingManifest, null, null);
+    return render(renderingManifest, new ApiCommand());
   }
 
   /**
@@ -207,11 +229,14 @@ public class ApiClient {
    * @exception   ContractException
    */
   public RenderingJob render(RenderingManifest renderingManifest, String httpCallback, HttpCallbackFormat httpCallbackFormat) throws HttpExpectationException, HttpException, ContractException {
-    return render(renderingManifest, httpCallback, httpCallbackFormat, null, null);
+    ApiCommand apiCommand = new ApiCommand();
+    apiCommand.setHttpCallback(httpCallback);
+    apiCommand.setHttpCallbackFormat(httpCallbackFormat);
+    return render(renderingManifest, apiCommand);
   }
 
   /**
-   * Creates a rendering job with http callbacks.
+   * Creates a rendering job with http callbacks, retry handler, and request interceptors.
    *
    * @param       renderingManifest           The manifest payload to render.
    * @param       httpCallback                The callback URL the API will communicate back to.
@@ -223,27 +248,36 @@ public class ApiClient {
    * @exception   ContractException
    */
   public RenderingJob render(RenderingManifest renderingManifest, String httpCallback, HttpCallbackFormat httpCallbackFormat, HttpRequestRetryHandler httpRequestRetryHandler, Collection<HttpRequestInterceptor> httpRequestInterceptors) throws HttpExpectationException, HttpException, ContractException {
-    RenderingJob renderingJob = new RenderingJob();
-    renderingJob.setRenderingManifest(renderingManifest);
-    render(renderingJob, httpCallback, httpCallbackFormat, httpRequestRetryHandler, httpRequestInterceptors);
-    return renderingJob;
+    ApiCommand apiCommand = new ApiCommand();
+    apiCommand.setHttpCallback(httpCallback);
+    apiCommand.setHttpCallbackFormat(httpCallbackFormat);
+    apiCommand.setHttpRequestRetryHandler(httpRequestRetryHandler);
+    apiCommand.setHttpRequestInterceptors(httpRequestInterceptors);
+    return render(renderingManifest, apiCommand);
   }
 
-  protected void render(RenderingJob renderingJob, String httpCallback, HttpCallbackFormat httpCallbackFormat, HttpRequestRetryHandler httpRequestRetryHandler, Collection<HttpRequestInterceptor> httpRequestInterceptors) throws HttpExpectationException, HttpException, ContractException {
-    HttpResponse httpResponse = doApiHttpPost(renderingJob, "rendering", httpCallback, httpCallbackFormat, httpRequestRetryHandler, httpRequestInterceptors);
-    try {
-      renderingJob.handleHttpResponse(httpResponse, 201);
-    }
-    catch (IOException e) {
-      throw new HttpException(e);
-    } 
+  /**
+   * Creates a rendering job with command object.
+   * 
+   * @param       renderingManifest
+   * @param       apiCommand
+   * @exception   HttpExpectationException
+   * @exception   HttpExpectation
+   * @exception   ContractException
+   */
+  public RenderingJob render(RenderingManifest renderingManifest, ApiCommand apiCommand) throws HttpExpectationException, HttpException, ContractException {
+    RenderingJob renderingJob = new RenderingJob();    
+    renderingJob.setRenderingManifest(renderingManifest);
+    apiCommand.setBaseResource(renderingJob);
+    executeApiCommandAndExpectHttp201(apiCommand);    
+    return renderingJob;
   }
 
   /**
    *
    */
   public DirectingAndRenderingJob directAndRender(DirectingManifest directingManifest, RenderingManifest renderingManifest) throws HttpExpectationException, HttpException, ContractException {
-    return directAndRender(directingManifest, renderingManifest, null, null);
+    return directAndRender(directingManifest, renderingManifest, new ApiCommand());
   }
 
   /**
@@ -258,7 +292,10 @@ public class ApiClient {
    * @exception   ContractException
    */
   public DirectingAndRenderingJob directAndRender(DirectingManifest directingManifest, RenderingManifest renderingManifest, String httpCallback, HttpCallbackFormat httpCallbackFormat) throws HttpExpectationException, HttpException, ContractException {
-    return directAndRender(directingManifest, renderingManifest, httpCallback, httpCallbackFormat, null, null);
+    ApiCommand apiCommand = new ApiCommand();
+    apiCommand.setHttpCallback(httpCallback);
+    apiCommand.setHttpCallbackFormat(httpCallbackFormat);
+    return directAndRender(directingManifest, renderingManifest, apiCommand);
   }
 
   /**   
@@ -275,22 +312,25 @@ public class ApiClient {
    * @exception   ContractException   
    */
   public DirectingAndRenderingJob directAndRender(DirectingManifest directingManifest, RenderingManifest renderingManifest, String httpCallback, HttpCallbackFormat httpCallbackFormat, HttpRequestRetryHandler httpRequestRetryHandler, Collection<HttpRequestInterceptor> httpRequestInterceptors) throws HttpExpectationException, HttpException, ContractException {
+    ApiCommand apiCommand = new ApiCommand();
+    apiCommand.setHttpCallback(httpCallback);
+    apiCommand.setHttpCallbackFormat(httpCallbackFormat);
+    apiCommand.setHttpRequestRetryHandler(httpRequestRetryHandler);
+    apiCommand.setHttpRequestInterceptors(httpRequestInterceptors);
+    return directAndRender(directingManifest, renderingManifest, apiCommand);
+  }
+
+  /**
+   *
+   */
+  public DirectingAndRenderingJob directAndRender(DirectingManifest directingManifest, RenderingManifest renderingManifest, ApiCommand apiCommand) throws HttpExpectationException, HttpException, ContractException {
     DirectingAndRenderingJob directingAndRenderingJob = new DirectingAndRenderingJob();
     directingAndRenderingJob.setDirectingManifest(directingManifest);
     directingAndRenderingJob.setRenderingManifest(renderingManifest);
     renderingManifest.setStoryboardUrl(null);
-    directAndRender(directingAndRenderingJob, httpCallback, httpCallbackFormat, httpRequestRetryHandler, httpRequestInterceptors); 
+    apiCommand.setBaseResource(directingAndRenderingJob);
+    executeApiCommandAndExpectHttp201(apiCommand);
     return directingAndRenderingJob;
-  }
-
-  protected void directAndRender(DirectingAndRenderingJob directingAndRenderingJob, String httpCallback, HttpCallbackFormat httpCallbackFormat, HttpRequestRetryHandler httpRequestRetryHandler, Collection<HttpRequestInterceptor> httpRequestInterceptors) throws HttpExpectationException, HttpException, ContractException {
-    HttpResponse httpResponse = doApiHttpPost(directingAndRenderingJob, "directing_and_rendering", httpCallback, httpCallbackFormat, httpRequestRetryHandler, httpRequestInterceptors);
-    try {
-      directingAndRenderingJob.handleHttpResponse(httpResponse, 201);
-    }
-    catch (IOException e) {
-      throw new HttpException(e);
-    }
   }
 
   /**
@@ -340,22 +380,26 @@ public class ApiClient {
     return doHttpRequest(httpPost, headers, httpRequestRetryHandler, httpRequestInterceptors);
   }
 
-  private HttpResponse doApiHttpPost(BaseResource baseResource, String context, String httpCallback, HttpCallbackFormat httpCallbackFormat, HttpRequestRetryHandler httpRequestRetryHandler, Collection<HttpRequestInterceptor> httpRequestInterceptors) throws HttpException {
+  private HttpResponse doApiHttpPost(ApiCommand apiCommand) throws HttpException { 
     HttpResponse httpResponse = null;
     Map<String, String> headers = new HashMap<String, String>();
 
-    if (httpCallback != null) {
-      baseResource.setHttpCallback(httpCallback);
+    if (apiCommand.getHttpCallback() != null) {
+      apiCommand.getBaseResource().setHttpCallback(apiCommand.getHttpCallback());
     }
 
-    if (httpCallbackFormat != null) {
-      baseResource.setHttpCallbackFormat(httpCallbackFormat);
+    if (apiCommand.getHttpCallbackFormat() != null) {
+      apiCommand.getBaseResource().setHttpCallbackFormat(apiCommand.getHttpCallbackFormat());
     }
 
     try {
-      headers.put("Content-Type", baseResource.getContentType());
-      headers.put("Accept", baseResource.getAccept());
-      httpResponse = doHttpPost(host + "/jobs/" + context, ((Jsonable) baseResource).toJson(), headers, httpRequestRetryHandler, httpRequestInterceptors);
+      headers.put("Content-Type", apiCommand.getBaseResource().getContentType());
+      headers.put("Accept", apiCommand.getBaseResource().getAccept());
+      httpResponse = doHttpPost(host + "/jobs/" + apiCommand.getEndpoint(), 
+        ((Jsonable) apiCommand.getBaseResource()).toJson(), 
+        headers, 
+        apiCommand.getHttpRequestRetryHandler(), 
+        apiCommand.getHttpRequestInterceptors());
     }
     catch (IOException e) {
       throw new HttpException(e);

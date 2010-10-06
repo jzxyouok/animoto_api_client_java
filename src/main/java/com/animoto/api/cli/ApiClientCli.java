@@ -1,6 +1,7 @@
 package com.animoto.api.cli;
 
 import com.animoto.api.ApiClient;
+import com.animoto.api.ApiCommand;
 import com.animoto.api.util.FileUtil;
 import com.animoto.api.util.StringUtil;
 
@@ -34,7 +35,7 @@ public class ApiClientCli extends ApiClient {
     RawRenderingJob rawRenderingJob = null;
     RawDirectingAndRenderingJob rawDirectingAndRenderingJob = null;
     String key, secret, host;
-    
+ 
     try {
       commandLine = parser.parse(options, args);
       if (args.length == 0 || commandLine.hasOption("help")) {
@@ -56,25 +57,13 @@ public class ApiClientCli extends ApiClient {
       }
 
       if (commandLine.hasOption("create-directing-job")) {
-        doApiPost(new RawDirectingJob(), commandLine.getOptionValue("create-directing-job"), new PostCliCallback() {
-          public void doCallback(Resource resource) throws Exception {
-            apiClient.direct((DirectingJob) resource, null, null, null, null);
-          }
-        });
+        doApiPost(new RawDirectingJob(), commandLine.getOptionValue("create-directing-job"));
       }
       else if (commandLine.hasOption("create-rendering-job")) {
-        doApiPost(new RawRenderingJob(), commandLine.getOptionValue("create-rendering-job"), new PostCliCallback() {
-          public void doCallback(Resource resource) throws Exception {
-            apiClient.render((RenderingJob) resource, null, null, null, null);
-          }
-        });
+        doApiPost(new RawRenderingJob(), commandLine.getOptionValue("create-rendering-job"));
       }
       else if (commandLine.hasOption("create-directing-and-rendering-job")) {
-        doApiPost(new RawDirectingAndRenderingJob(), commandLine.getOptionValue("create-directing-and-rendering-job"), new PostCliCallback() {
-          public void doCallback(Resource resource) throws Exception {
-            apiClient.directAndRender((DirectingAndRenderingJob) resource, null, null, null, null);
-          }
-        });
+        doApiPost(new RawDirectingAndRenderingJob(), commandLine.getOptionValue("create-directing-and-rendering-job"));
       }
       else if (commandLine.hasOption("storyboard")) {
         doApiGet("Storyboard", commandLine.getOptionValue("storyboard"));
@@ -97,9 +86,11 @@ public class ApiClientCli extends ApiClient {
     }
   }
 
-  private static void doApiPost(Raw raw, String file, PostCliCallback postCliCallback) throws Exception {
+  private static void doApiPost(Raw raw, String file) throws Exception {
+    ApiCommand apiCommand = new ApiCommand();
     raw.setRawEntity(FileUtil.readFile(file));
-    postCliCallback.doCallback((Resource) raw);
+    apiCommand.setBaseResource((BaseResource) raw);
+    apiClient.executeApiCommandAndExpectHttp201(apiCommand);
     ((BaseResource) raw).prettyPrintToSystem();
   }
 
@@ -125,12 +116,5 @@ public class ApiClientCli extends ApiClient {
     options.addOption("h", "help", false, "Print CLI help");
     options.addOption("t", "host", true, "The API host to communicate to (default: https://api.animoto.com)."); 
     return options;
-  }
-
-  /**
-   * Anonymous interface for anonymous objects.
-   */
-  interface PostCliCallback {
-    public void doCallback(Resource resource) throws Exception;
   }
 }

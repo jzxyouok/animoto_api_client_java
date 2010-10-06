@@ -4,6 +4,7 @@ import com.animoto.api.resource.Resource;
 import com.animoto.api.resource.BaseResource;
 import com.animoto.api.resource.RenderingJob;
 import com.animoto.api.resource.DirectingJob;
+import com.animoto.api.resource.DirectingAndRenderingJob;
 import com.animoto.api.exception.ContractException;
 
 /**
@@ -28,14 +29,17 @@ public class CallbackUtil {
    */
   public static Resource generateFromJson(String json) throws ContractException, IllegalArgumentException {
     BaseResource resource = null;
-    if (json.indexOf("rendering_job") > -1) {
+    if (json.indexOf("rendering_job") > -1 && json.indexOf("directing_and_rendering_job") == -1) {
       resource = new RenderingJob();
     }
-    else if(json.indexOf("directing_job") > -1) {
+    else if (json.indexOf("directing_job") > -1 && json.indexOf("directing_and_rendering_job") == -1) {
       resource = new DirectingJob();
     }
+    else if (json.indexOf("directing_and_rendering_job") > -1) {
+      resource = new DirectingAndRenderingJob();
+    }
     else {
-      throw new IllegalArgumentException("Expecting either a rendering or directing job.");
+      throw new IllegalArgumentException("Expecting either a rendering_job, directing_job, or directing_and_rendering_job.");
     }
     resource.fromJson(json);
     return resource;
