@@ -233,7 +233,7 @@ JVM.
 
 You might want to checkout our [the wiki page](http://wiki.github.com/animoto/animoto_api_client_java) for information on coding standards, new features, etc.
 
-### Copyright Information
+## Copyright Information
 
 Copyright © 2010 Animoto Inc. All rights reserved. 
 
