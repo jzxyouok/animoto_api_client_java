@@ -2,6 +2,7 @@ package com.animoto.api.util;
 
 import com.animoto.api.enums.*;
 import com.animoto.api.gson.serializer.*;
+import com.animoto.api.gson.deserializer.*;
 
 import com.google.gson.*;
 
@@ -15,6 +16,11 @@ public class GsonUtil {
     gsonBuilder.registerTypeAdapter(Resolution.class, new ValueSerializer());
     gsonBuilder.registerTypeAdapter(Format.class, new ValueSerializer());
     gsonBuilder.registerTypeAdapter(Framerate.class, new ValueSerializer());
+  
+    gsonBuilder.registerTypeAdapter(Resolution.class, new ResolutionDeserializer());
+    gsonBuilder.registerTypeAdapter(Framerate.class, new FramerateDeserializer());
+    gsonBuilder.registerTypeAdapter(Format.class, new FormatDeserializer());
+
     return gsonBuilder.create();
   }
 }

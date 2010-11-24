@@ -1,6 +1,7 @@
 package com.animoto.api.resource;
 
 import com.animoto.api.ApiClient;
+import com.animoto.api.Metadata;
 import com.animoto.api.enums.HttpCallbackFormat;
 import com.animoto.api.util.GsonUtil;
 import com.animoto.api.util.StringUtil;
@@ -35,7 +36,7 @@ public abstract class BaseResource implements Resource {
   protected String state;
   protected String requestId;
   protected Map<String, String> links = new HashMap<String, String>();
-  protected Map<String, String> metadata = new HashMap<String, String>();
+  protected Metadata metadata;
   protected Storyboard storyboard;
   protected Video video;
   protected Response response; 
@@ -166,14 +167,14 @@ public abstract class BaseResource implements Resource {
     return links;
   }
 
-  public void setMetadata(Map<String, String> metadata) {
+  public void setMetadata(Metadata metadata) {
     this.metadata = metadata;
   }
 
   /**
    * Get the metadata of the resource from API.
    */
-  public Map<String, String> getMetadata() {
+  public Metadata getMetadata() {
     return metadata;
   }
 
@@ -242,7 +243,6 @@ public abstract class BaseResource implements Resource {
     if (statusCode != expectedStatusCode) {
       throw new HttpExpectationException(statusCode, expectedStatusCode, body, apiResponse);
     }
-    fromJson(body);
     setRequestId(httpResponse.getFirstHeader("x-animoto-request-id").getValue());
     if (getLocation() == null ||  StringUtil.isBlank(getLocation())) {
       throw new ContractException("Expected location URL to be present.");
@@ -258,9 +258,10 @@ public abstract class BaseResource implements Resource {
    * @exception   ContractException
    */
   public ApiResponse fromJson(String json) throws ContractException {
-    ApiResponse apiResponse = newGson().fromJson(json, ApiResponse.class);
-    BaseResource dtoBaseResource ;
+    ApiResponse apiResponse = null;
+    BaseResource dtoBaseResource;
 
+    apiResponse = newGson().fromJson(json, ApiResponse.class);
     this.response = apiResponse.getResponse();
     if (this.response == null || this.response.getPayload() == null) {
       return apiResponse;
@@ -352,13 +353,6 @@ public abstract class BaseResource implements Resource {
     while (it.hasNext()) {
       key = (String) it.next();
       buf.append(key + ": " + getLinks().get(key) + "\n");
-    }
-    buf.append("meta data\n");
-    buf.append(BREAK);
-    it = getMetadata().keySet().iterator();
-    while (it.hasNext()) {
-      key = (String) it.next();
-      buf.append(key + ": " + getMetadata().get(key) + "\n");
     }
     System.out.println(buf.toString());
   }

@@ -65,7 +65,6 @@ public class ApiClientIntegrationTest extends TestCase {
       assertNotNull(storyboard.getLinks());
       assertTrue(storyboard.getLinks().size() > 0);
       assertNotNull(storyboard.getMetadata());
-      assertTrue(storyboard.getMetadata().size() > 0);
     }
     catch (Exception e) {
       fail(e.toString());
