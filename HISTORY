@@ -1,4 +1,10 @@
-CHANGE NOTES - 1.2
+CHANGE NOTES 
+
+== 1.2.1
+
+* Minor update to reference official domain of platform.animoto.com.
+
+== 1.2
 
 * Resource metadata is now represented as a dedicated model. Before it was a simple Map<String, String>. The model contains a list of Songs, Visuals, and an inner model for RenderingParameters.
 * This is a breaking change to all previous clients that used the Metadata object on BaseResource.
