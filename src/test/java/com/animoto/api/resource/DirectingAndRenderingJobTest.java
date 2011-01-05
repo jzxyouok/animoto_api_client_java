@@ -16,7 +16,8 @@ public class DirectingAndRenderingJobTest extends TestCase {
       assertNotNull(apiErrors);
       assertEquals(8, apiErrors.length);
       for (int i = 0; i < apiErrors.length; i++) {
-        System.out.println("" + apiErrors[i]);
+        assertNotNull(apiErrors[i].getMessage());
+        assertNotNull(apiErrors[i].getCode());
       }
     }
     catch (Exception e) {
