@@ -62,7 +62,6 @@ public class ApiClient {
   private String key;
   private String secret;
   private String host = "https://platform.animoto.com";
-  private PreemptiveAuth preemptiveAuth;
   private static final Log logger = LogFactory.getLog(ApiClient.class);
 
   public static Log getLogger() {
@@ -97,7 +96,6 @@ public class ApiClient {
     this.key = key;
     this.secret = secret;
     this.host = host;
-    preemptiveAuth = new PreemptiveAuth();
   }
 
   public String getVersion() {
@@ -417,16 +415,10 @@ public class ApiClient {
    * http://javaevangelist.blogspot.com/2010/12/apache-httpclient-4x-preemptive.html
    */
   class PreemptiveAuth implements HttpRequestInterceptor {
-    private BasicScheme basicAuthScheme;
-
-    public PreemptiveAuth() {
-      basicAuthScheme = new BasicScheme();
-    }
-
     public void process(HttpRequest request, HttpContext context) {
       AuthState authState = (AuthState) context.getAttribute(ClientContext.TARGET_AUTH_STATE);
 
-      authState.setAuthScheme(basicAuthScheme);
+      authState.setAuthScheme(new BasicScheme());
       authState.setCredentials(new UsernamePasswordCredentials(key, secret));
     }
   }
@@ -457,7 +449,7 @@ public class ApiClient {
      * built-in HTTP client authentication interceptors will back off (they'll detect that
      * the authentication scheme already has been set).
      */
-    httpClient.addRequestInterceptor(preemptiveAuth, 0);
+    httpClient.addRequestInterceptor(new PreemptiveAuth(), 0);
 
     return httpClient.execute(httpRequestBase);
   } 
