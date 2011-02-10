@@ -70,7 +70,7 @@ The project uses the basic Maven tasks:
 * `mvn test` - Run all unit tests for the library.
 * `mvn package` - Create a JAR file of the library.
 * `mvn javadoc:javadoc` - Generate Javadoc documentation locally.
-* `mvn assembly:assembly` - Generate one uber-JAR with all dependencies in the JAR. This is useful for running the CLI interface.
+* `mvn assembly:assembly` - Generate one uber-JAR with all dependencies in the JAR. This is useful for running the CLI interface or SubmitJob.
 
 ### Creating a video using the Java client
 
@@ -193,6 +193,17 @@ don't like using curl on the command line), you can run the CLI with a utility
 shell script that sets the classpath and executes the CLI class:
 
 ./cli.sh --help
+
+Note that you *must* run mvn assembly:assembly in order to generate the required JAR with all dependencies.
+
+### SubmitJob
+
+A small CLI application is provided to submit a job on the command line.
+Assuming you have generated a JAR with all dependencies (mvn assembly:assembly),
+you can run SubmitJob with a utility shell script that sets the classpath
+and executes the SubmitJob class:
+
+./submit_job.sh --help
 
 ### Integration Tests
 

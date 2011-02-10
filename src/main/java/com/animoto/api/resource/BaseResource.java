@@ -11,6 +11,7 @@ import com.animoto.api.exception.HttpExpectationException;
 import com.animoto.api.exception.ContractException;
 import com.animoto.api.dto.Response;
 
+import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 
 import com.google.gson.Gson;
@@ -234,15 +235,31 @@ public abstract class BaseResource implements Resource {
   public void handleHttpResponse(HttpResponse httpResponse, int expectedStatusCode) throws HttpExpectationException, ContractException, IOException {
     int statusCode;
     String body;
-    ApiResponse apiResponse;
 
     statusCode = httpResponse.getStatusLine().getStatusCode();
     body = StringUtil.convertStreamToString(httpResponse.getEntity().getContent());
-    apiResponse = fromJson(body);
     ApiClient.getLogger().info("resource [" + (StringUtil.isBlank(getLocation()) ? toString() : getLocation()) + "] received [" + statusCode + "] and expected [" + expectedStatusCode + "]");
+
+    ApiResponse apiResponse = null;
+
+    /*
+     * Only parse JSON if the content type indicates that the response body is JSON; some
+     * errors will be returned from the server without a body (401) or with
+     * an HTML body (502).
+     */
+    Header contentTypeHeader = httpResponse.getFirstHeader("Content-Type");
+    if((contentTypeHeader != null) && (contentTypeHeader.getValue() != null) && contentTypeHeader.getValue().contains("json")) {
+      apiResponse = fromJson(body);
+    }
+
     if (statusCode != expectedStatusCode) {
       throw new HttpExpectationException(statusCode, expectedStatusCode, body, apiResponse);
     }
+
+    if(apiResponse == null) {
+      throw new ContractException("Expected a JSON body instead of " + contentTypeHeader.getValue());
+    }
+
     setRequestId(httpResponse.getFirstHeader("x-animoto-request-id").getValue());
     if (getLocation() == null ||  StringUtil.isBlank(getLocation())) {
       throw new ContractException("Expected location URL to be present.");

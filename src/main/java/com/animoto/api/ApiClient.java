@@ -13,23 +13,25 @@ import com.animoto.api.resource.DirectingAndRenderingJob;
 import com.animoto.api.DirectingManifest;
 import com.animoto.api.RenderingManifest;
 
-import com.animoto.api.exception.ApiException;
 import com.animoto.api.exception.HttpExpectationException;
 import com.animoto.api.exception.HttpException;
 import com.animoto.api.exception.ContractException;
 
 import com.animoto.api.enums.HttpCallbackFormat;
 
+import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpRequestInterceptor;
 import org.apache.http.client.HttpRequestRetryHandler;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.protocol.ClientContext;
+import org.apache.http.impl.auth.BasicScheme;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.auth.Credentials;
+import org.apache.http.protocol.HttpContext;
+import org.apache.http.auth.AuthState;
 import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.http.auth.AuthScope;
 import org.apache.http.entity.StringEntity;
 
 import org.apache.commons.logging.Log;
@@ -60,6 +62,7 @@ public class ApiClient {
   private String key;
   private String secret;
   private String host = "https://platform.animoto.com";
+  private PreemptiveAuth preemptiveAuth;
   private static final Log logger = LogFactory.getLog(ApiClient.class);
 
   public static Log getLogger() {
@@ -70,6 +73,7 @@ public class ApiClient {
    * Default constructor. You will need to set a key and secret.
    */
   public ApiClient() {
+    this(null, null);
   }
 
   /**
@@ -79,8 +83,7 @@ public class ApiClient {
    * @param secret  Your Animoto API secret
    */
   public ApiClient(String key, String secret) {
-    this.key = key;
-    this.secret = secret;
+    this(key, secret, null);
   }
 
   /**
@@ -94,10 +97,11 @@ public class ApiClient {
     this.key = key;
     this.secret = secret;
     this.host = host;
+    preemptiveAuth = new PreemptiveAuth();
   }
 
   public String getVersion() {
-    return "1.2.1-SNAPSHOT";
+    return "1.2.2";
   }
 
   public String getUserAgent() {
@@ -407,14 +411,32 @@ public class ApiClient {
     return httpResponse;
   }
 
+  /*
+   * Who knew?  It turns out that the best way to force basic authentication in
+   * Apache Http Client v4 is by using a request interceptor.  See:
+   * http://javaevangelist.blogspot.com/2010/12/apache-httpclient-4x-preemptive.html
+   */
+  class PreemptiveAuth implements HttpRequestInterceptor {
+    private BasicScheme basicAuthScheme;
+
+    public PreemptiveAuth() {
+      basicAuthScheme = new BasicScheme();
+    }
+
+    public void process(HttpRequest request, HttpContext context) {
+      AuthState authState = (AuthState) context.getAttribute(ClientContext.TARGET_AUTH_STATE);
+
+      authState.setAuthScheme(basicAuthScheme);
+      authState.setCredentials(new UsernamePasswordCredentials(key, secret));
+    }
+  }
+
   private HttpResponse doHttpRequest(HttpRequestBase httpRequestBase, Map<String, String> headers, HttpRequestRetryHandler httpRequestRetryHandler, Collection<HttpRequestInterceptor> httpRequestInterceptors) throws IOException, UnsupportedEncodingException {
-    UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(key, secret);
     DefaultHttpClient httpClient = new DefaultHttpClient();
-    String key = null;
 
     for (Iterator it = headers.keySet().iterator(); it.hasNext();) {
-      key = (String) it.next();
-      httpRequestBase.addHeader(key, headers.get(key));
+      String headerKey = (String) it.next();
+      httpRequestBase.addHeader(headerKey, headers.get(headerKey));
     }
     httpRequestBase.addHeader("User-Agent", getUserAgent());
 
@@ -430,7 +452,13 @@ public class ApiClient {
       }
     }
 
-    httpClient.getCredentialsProvider().setCredentials(AuthScope.ANY, credentials);
+    /*
+     * The preemptive authentication interceptor should run first, so that the
+     * built-in HTTP client authentication interceptors will back off (they'll detect that
+     * the authentication scheme already has been set).
+     */
+    httpClient.addRequestInterceptor(preemptiveAuth, 0);
+
     return httpClient.execute(httpRequestBase);
   } 
 }
