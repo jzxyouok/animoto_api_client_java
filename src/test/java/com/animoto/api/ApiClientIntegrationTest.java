@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.ArrayList;
 
 import org.apache.http.HttpRequestInterceptor;
+import org.apache.http.HttpStatus;
 
 import com.animoto.api.util.DirectingManifestFactory;
 import com.animoto.api.util.RenderingManifestFactory;
@@ -26,6 +27,7 @@ import com.animoto.api.visual.TitleCard;
 import com.animoto.api.visual.Image;
 
 import com.animoto.api.exception.ApiException;
+import com.animoto.api.exception.ContractException;
 import com.animoto.api.exception.HttpExpectationException;
 import com.animoto.api.exception.HttpException;
 
@@ -40,6 +42,28 @@ public class ApiClientIntegrationTest extends TestCase {
 
   public void testDirecting() {
     createDirectingJob();
+  }
+
+  public void testDelete() throws HttpException, HttpExpectationException, ContractException {
+    DirectingJob directingJob = createDirectingJob();
+    Storyboard storyboard = directingJob.getStoryboard();
+
+    apiClient.reload(storyboard);
+    apiClient.delete(storyboard);
+
+    try {
+      apiClient.delete(storyboard); // Should fail (already deleted)
+    } catch(HttpExpectationException e) {
+      System.out.println("Expected exception when deleting storyboard twice: " + e);
+      assertEquals(e.getReceivedCode(), HttpStatus.SC_GONE);
+    }
+
+    try {
+      apiClient.reload(storyboard); // Should fail, since we deleted the storyboad
+    } catch(HttpExpectationException e) {
+      System.out.println("Expected exception when trying reload after delete: " + e);
+      assertEquals(e.getReceivedCode(), HttpStatus.SC_GONE);
+    }
   }
 
   public void testHttpExceptionThrownOnNetworkIssues() {
@@ -112,7 +136,7 @@ public class ApiClientIntegrationTest extends TestCase {
     RenderingJob renderingJob = null;
     RenderingManifest renderingManifest = new RenderingManifest();
     RenderingParameters renderingParameters = new RenderingParameters();
- 
+
     renderingParameters.setFramerate(Framerate.F_30);
     renderingManifest.setStoryboard(directingJob.getStoryboard());
     renderingManifest.setRenderingParameters(renderingParameters);
@@ -177,7 +201,7 @@ public class ApiClientIntegrationTest extends TestCase {
     DirectingJob directingJob = null;
 
     try {
-      // Post a directing job to the API. 
+      // Post a directing job to the API.
       directingJob = apiClient.direct(directingManifest);
       assertNotNull(directingJob);
       assertNotNull(directingJob.getLocation());
@@ -205,13 +229,13 @@ public class ApiClientIntegrationTest extends TestCase {
   }
 
   protected RenderingJob createRenderingJob() {
-    DirectingJob directingJob = createDirectingJob(); 
+    DirectingJob directingJob = createDirectingJob();
     RenderingJob renderingJob = null;
     RenderingManifest renderingManifest = RenderingManifestFactory.newInstance();
-  
+
     try {
       renderingManifest.setStoryboard(directingJob.getStoryboard());
-      renderingJob = apiClient.render(renderingManifest); 
+      renderingJob = apiClient.render(renderingManifest);
       assertTrue(renderingJob.isPending());
       assertNotNull(renderingJob.getLocation());
       assertNotNull(renderingJob.getRequestId());
