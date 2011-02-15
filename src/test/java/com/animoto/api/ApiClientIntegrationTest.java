@@ -17,6 +17,7 @@ import com.animoto.api.resource.DirectingJob;
 import com.animoto.api.resource.RenderingJob;
 import com.animoto.api.resource.DirectingAndRenderingJob;
 import com.animoto.api.resource.Storyboard;
+import com.animoto.api.resource.StoryboardBundlingJob;
 import com.animoto.api.resource.Video;
 
 import com.animoto.api.DirectingManifest;
@@ -80,6 +81,23 @@ public class ApiClientIntegrationTest extends TestCase {
     }
   }
 
+  public void testBundle() throws HttpExpectationException, HttpException, ContractException {
+    DirectingJob directingJob = createDirectingJob();
+    Storyboard storyboard = directingJob.getStoryboard();
+
+    StoryboardBundlingManifest manifest = new StoryboardBundlingManifest();
+    manifest.setStoryboard(storyboard);
+
+    StoryboardBundlingJob bundlingJob = apiClient.bundle(manifest);
+
+    assertNotNull(bundlingJob);
+    assertNotNull(bundlingJob.getLocation());
+    assertNotNull(bundlingJob.getRequestId());
+    //assertEquals("bundling", directingJob.getState());
+
+    //waitForJobCompletion(bundlingJob);
+  }
+
   public void testStoryboard() {
     DirectingJob directingJob = createDirectingJob();
     Storyboard storyboard = directingJob.getStoryboard();
@@ -116,11 +134,9 @@ public class ApiClientIntegrationTest extends TestCase {
       directingManifest.clearVisuals();
       directingManifest.addVisual(image);
       directingJob = apiClient.direct(directingManifest);
-      assertTrue(directingJob.isPending());
-      while (directingJob.isPending()) {
-        sleep(3000);
-        apiClient.reload(directingJob);
-      }
+
+      waitForJobCompletion(directingJob);
+
       assertTrue(directingJob.isFailed());
       assertNotNull(directingJob.getResponse());
       apiErrors = directingJob.getResponse().getStatus().getApiErrors();
@@ -182,11 +198,9 @@ public class ApiClientIntegrationTest extends TestCase {
 
     try {
       directingAndRenderingJob = apiClient.directAndRender(directingManifest, renderingManifest);
-      assertTrue(directingAndRenderingJob.isPending());
-      while(directingAndRenderingJob.isPending()) {
-        sleep(3000);
-        apiClient.reload(directingAndRenderingJob);
-      }
+
+      waitForJobCompletion(directingAndRenderingJob);
+
       assertTrue(directingAndRenderingJob.isCompleted());
       assertNotNull(directingAndRenderingJob.getStoryboard());
       assertNotNull(directingAndRenderingJob.getVideo());
@@ -207,14 +221,8 @@ public class ApiClientIntegrationTest extends TestCase {
       assertNotNull(directingJob.getLocation());
       assertNotNull(directingJob.getRequestId());
       assertEquals("retrieving_assets", directingJob.getState());
-      assertTrue(directingJob.isPending());
 
-      // Wait until it is completed.
-      while(directingJob.isPending()) {
-        sleep(3000);
-        apiClient.reload(directingJob);
-        assertFalse(directingJob.isFailed());
-      }
+      waitForJobCompletion(directingJob);
 
       // Job is complete!
       assertTrue(directingJob.isCompleted());
@@ -236,13 +244,11 @@ public class ApiClientIntegrationTest extends TestCase {
     try {
       renderingManifest.setStoryboard(directingJob.getStoryboard());
       renderingJob = apiClient.render(renderingManifest);
-      assertTrue(renderingJob.isPending());
       assertNotNull(renderingJob.getLocation());
       assertNotNull(renderingJob.getRequestId());
-      while(renderingJob.isPending()) {
-        sleep(3000);
-        apiClient.reload(renderingJob);
-      }
+
+      waitForJobCompletion(renderingJob);
+
       assertTrue(renderingJob.isCompleted());
       assertNotNull(renderingJob.getVideo());
       assertNotNull(renderingJob.getStoryboard());
@@ -253,10 +259,27 @@ public class ApiClientIntegrationTest extends TestCase {
     return renderingJob;
   }
 
-  private void sleep(int time) {
-    try {
-      Thread.sleep(time);
+  /*
+   * TODO: Consider making this part of ApiClient; how long to sleep
+   * between polling attempts certainly is a best practices issue.
+   * Thought: should we poll for a very short amount of time initially
+   * (say 50 ms) and slowly increase the polling interval (adaptive
+   * polling)?
+   */
+  private void waitForJobCompletion(BaseResource job) throws HttpException, HttpExpectationException, ContractException {
+    assertTrue(job.isPending());
+
+    while(job.isPending()) {
+      assertFalse(job.isCompleted());
+      assertFalse(job.isFailed());
+      try {
+        Thread.sleep(1000);
+      }
+      catch (Exception ignored) {}
+      apiClient.reload(job);
     }
-    catch (Exception ignored) {}
+
+    assertTrue(job.isCompleted() || job.isFailed());
+    assertEquals(job.isCompleted(), !job.isFailed());
   }
 }

@@ -8,6 +8,7 @@ public class Payload {
   private DirectingJob directingJob;
   private RenderingJob renderingJob;
   private DirectingAndRenderingJob directingAndRenderingJob;
+  private StoryboardBundlingJob storyboardBundlingJob;
   private Storyboard storyboard;
   private Video video;
 
@@ -43,10 +44,14 @@ public class Payload {
     return getDirectingAndRenderingJob();
   }
 
-  /** 
+  public StoryboardBundlingJob getStoryboardBundlingJob() {
+    return storyboardBundlingJob;
+  }
+
+  /**
    * Get the associated BaseResource based on the Class you pass in.
    */
-  public BaseResource getBaseResource(Class clazz) {
+  public BaseResource getBaseResource(Class<?> clazz) {
     try {
       String name = "get" + clazz.getName().substring(clazz.getName().lastIndexOf ('.') + 1);
       Method method = this.getClass().getMethod(name);

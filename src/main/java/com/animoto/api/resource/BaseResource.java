@@ -40,11 +40,11 @@ public abstract class BaseResource implements Resource {
   protected Metadata metadata;
   protected Storyboard storyboard;
   protected Video video;
-  protected Response response; 
+  protected Response response;
 
   /**
    * Indicate if the resource should contain a Storyboard if complete. <p/>
-   * 
+   *
    * Override to indicate if it does.
    *
    * @see DirectingJob
@@ -58,7 +58,7 @@ public abstract class BaseResource implements Resource {
   /**
    * Indicate if the resource should contain a Video if complete. <p/>
    *
-   * Override to indiciate if it does.
+   * Override to indicate if it does.
    *
    * @see RenderingJob
    * @see DirectingAndRenderingJob
@@ -157,7 +157,7 @@ public abstract class BaseResource implements Resource {
   public void setLinks(Map<String, String> links) {
     this.links = links;
   }
- 
+
   /**
    * Get the related links of the resource from API.
    */
@@ -268,7 +268,7 @@ public abstract class BaseResource implements Resource {
 
   /**
    * Allows you to populate this bean given a JSON from API.<p/>
-   * 
+   *
    * Will call storyboard and video populate methods if expected by resource contract.<p/>
    *
    * @param       json

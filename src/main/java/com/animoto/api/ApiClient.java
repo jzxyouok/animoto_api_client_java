@@ -10,6 +10,7 @@ import com.animoto.api.resource.BaseResource;
 import com.animoto.api.resource.DirectingJob;
 import com.animoto.api.resource.RenderingJob;
 import com.animoto.api.resource.DirectingAndRenderingJob;
+import com.animoto.api.resource.StoryboardBundlingJob;
 import com.animoto.api.util.StringUtil;
 import com.animoto.api.DirectingManifest;
 import com.animoto.api.RenderingManifest;
@@ -131,6 +132,30 @@ public class ApiClient {
 
   public String getHost() {
     return host;
+  }
+
+  /**
+   * @see bundle(StoryboardBundlingManifest, ApiCommand)
+   */
+  public StoryboardBundlingJob bundle(StoryboardBundlingManifest manifest) throws HttpExpectationException, HttpException, ContractException {
+    return bundle(manifest, new ApiCommand());
+  }
+
+  /**
+   * Instruct Animoto to bundle all resources associated with the Storyboard
+   * referenced by the manifest into a file, which can be downloaded and
+   * uploaded back to Animoto in order to recommence work on a movie at some point
+   * in the future.
+   *
+   * @param manifest Contains the storyboard to bundle
+   * @return the bundling job, which can be polled for completion (and then queried for the bundle URL)
+   */
+  public StoryboardBundlingJob bundle(StoryboardBundlingManifest manifest, ApiCommand apiCommand) throws HttpExpectationException, HttpException, ContractException {
+    StoryboardBundlingJob job = new StoryboardBundlingJob();
+    job.setStoryboardBundlingManifest(manifest);
+    apiCommand.setBaseResource(job);
+    executeApiCommandAndExpectHttp201(apiCommand);
+    return job;
   }
 
   /**
