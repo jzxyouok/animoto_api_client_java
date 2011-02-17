@@ -2,11 +2,11 @@ package com.animoto.api;
 
 import junit.framework.TestCase;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.ArrayList;
 
 import org.apache.http.HttpRequestInterceptor;
+import org.apache.http.HttpStatus;
 
 import com.animoto.api.util.DirectingManifestFactory;
 import com.animoto.api.util.RenderingManifestFactory;
@@ -16,16 +16,17 @@ import com.animoto.api.resource.DirectingJob;
 import com.animoto.api.resource.RenderingJob;
 import com.animoto.api.resource.DirectingAndRenderingJob;
 import com.animoto.api.resource.Storyboard;
+import com.animoto.api.resource.StoryboardBundlingJob;
+import com.animoto.api.resource.StoryboardUnbundlingJob;
 import com.animoto.api.resource.Video;
 
 import com.animoto.api.DirectingManifest;
 import com.animoto.api.RenderingManifest;
 import com.animoto.api.RenderingParameters;
 
-import com.animoto.api.visual.TitleCard;
 import com.animoto.api.visual.Image;
 
-import com.animoto.api.exception.ApiException;
+import com.animoto.api.exception.ContractException;
 import com.animoto.api.exception.HttpExpectationException;
 import com.animoto.api.exception.HttpException;
 
@@ -42,6 +43,30 @@ public class ApiClientIntegrationTest extends TestCase {
     createDirectingJob();
   }
 
+  public void testDelete() throws HttpException, HttpExpectationException, ContractException {
+    DirectingJob directingJob = createDirectingJob();
+    Storyboard storyboard = directingJob.getStoryboard();
+
+    apiClient.reload(storyboard);
+    apiClient.delete(storyboard);
+
+    try {
+      apiClient.delete(storyboard); // Should fail (already deleted)
+      fail("No exception when deleting storyboard twice!");
+    } catch(HttpExpectationException e) {
+      System.out.println("Expected exception when deleting storyboard twice: " + e);
+      assertEquals(e.getReceivedCode(), HttpStatus.SC_GONE);
+    }
+
+    try {
+      apiClient.reload(storyboard); // Should fail, since we deleted the storyboad
+      fail("No exception when trying to reload after delete!");
+    } catch(HttpExpectationException e) {
+      System.out.println("Expected exception when trying reload after delete: " + e);
+      assertEquals(e.getReceivedCode(), HttpStatus.SC_GONE);
+    }
+  }
+
   public void testHttpExceptionThrownOnNetworkIssues() {
     try {
       apiClient.setHost("http://nowhere.com");
@@ -54,6 +79,69 @@ public class ApiClientIntegrationTest extends TestCase {
     catch (Exception e) {
       fail(e.toString());
     }
+  }
+
+  public void testBundlingUnbundling() throws HttpExpectationException, HttpException, ContractException {
+    /*
+     * We'll test the full cycle:
+     * * Create a directing job
+     * * Bundle
+     * * Delete the job
+     * * Unbundle
+     * * Render
+     */
+    DirectingJob directingJob = createDirectingJob();
+    Storyboard storyboard = directingJob.getStoryboard();
+
+    StoryboardBundlingManifest bundlingManifest = new StoryboardBundlingManifest();
+    bundlingManifest.setStoryboard(storyboard);
+
+    StoryboardBundlingJob bundlingJob = apiClient.bundle(bundlingManifest);
+
+    assertNotNull(bundlingJob);
+    assertNotNull(bundlingJob.getLocation());
+    assertNotNull(bundlingJob.getRequestId());
+    assertEquals("bundling", bundlingJob.getState());
+
+    waitForJobCompletion(bundlingJob);
+
+    assertTrue(bundlingJob.isCompleted());
+
+    String bundleUrl = bundlingJob.getBundleUrl();
+
+    System.out.println("Created storyboard bundle: " + bundleUrl);
+
+    apiClient.delete(storyboard);
+
+    try {
+      apiClient.reload(storyboard); // Should fail, since we deleted the storyboad
+      fail("No exception when trying to reload after delete!");
+    } catch(HttpExpectationException e) {
+      assertEquals(e.getReceivedCode(), HttpStatus.SC_GONE);
+    }
+
+    StoryboardUnbundlingManifest unbundlingManifest = new StoryboardUnbundlingManifest();
+    unbundlingManifest.setBundleUrl(bundleUrl);
+    StoryboardUnbundlingJob unbundlingJob = apiClient.unbundle(unbundlingManifest);
+
+    waitForJobCompletion(unbundlingJob);
+
+    assertTrue(unbundlingJob.isCompleted());
+
+    System.out.println("Unbundled " + bundleUrl + " to " + unbundlingJob.getStoryboard().getLocation());
+
+    apiClient.reload(unbundlingJob.getStoryboard());
+
+    RenderingManifest renderingManifest = RenderingManifestFactory.newInstance();
+    renderingManifest.setStoryboard(unbundlingJob.getStoryboard());
+    RenderingJob renderingJob = apiClient.render(renderingManifest);
+
+    waitForJobCompletion(renderingJob);
+
+    assertTrue(renderingJob.isCompleted());
+    assertNotNull(renderingJob.getVideo());
+
+    System.out.println("Rendered unbundling job to " + renderingJob.getVideo().getLocation());
   }
 
   public void testStoryboard() {
@@ -92,11 +180,9 @@ public class ApiClientIntegrationTest extends TestCase {
       directingManifest.clearVisuals();
       directingManifest.addVisual(image);
       directingJob = apiClient.direct(directingManifest);
-      assertTrue(directingJob.isPending());
-      while (directingJob.isPending()) {
-        sleep(3000);
-        apiClient.reload(directingJob);
-      }
+
+      waitForJobCompletion(directingJob);
+
       assertTrue(directingJob.isFailed());
       assertNotNull(directingJob.getResponse());
       apiErrors = directingJob.getResponse().getStatus().getApiErrors();
@@ -109,15 +195,14 @@ public class ApiClientIntegrationTest extends TestCase {
 
   public void testRenderingRaisedException() throws Exception {
     DirectingJob directingJob = createDirectingJob();
-    RenderingJob renderingJob = null;
     RenderingManifest renderingManifest = new RenderingManifest();
     RenderingParameters renderingParameters = new RenderingParameters();
- 
+
     renderingParameters.setFramerate(Framerate.F_30);
     renderingManifest.setStoryboard(directingJob.getStoryboard());
     renderingManifest.setRenderingParameters(renderingParameters);
     try {
-      renderingJob = apiClient.render(renderingManifest);
+      apiClient.render(renderingManifest);
       fail("Expected error from API!");
     }
     catch (HttpExpectationException e) {
@@ -158,11 +243,9 @@ public class ApiClientIntegrationTest extends TestCase {
 
     try {
       directingAndRenderingJob = apiClient.directAndRender(directingManifest, renderingManifest);
-      assertTrue(directingAndRenderingJob.isPending());
-      while(directingAndRenderingJob.isPending()) {
-        sleep(3000);
-        apiClient.reload(directingAndRenderingJob);
-      }
+
+      waitForJobCompletion(directingAndRenderingJob);
+
       assertTrue(directingAndRenderingJob.isCompleted());
       assertNotNull(directingAndRenderingJob.getStoryboard());
       assertNotNull(directingAndRenderingJob.getVideo());
@@ -177,20 +260,14 @@ public class ApiClientIntegrationTest extends TestCase {
     DirectingJob directingJob = null;
 
     try {
-      // Post a directing job to the API. 
+      // Post a directing job to the API.
       directingJob = apiClient.direct(directingManifest);
       assertNotNull(directingJob);
       assertNotNull(directingJob.getLocation());
       assertNotNull(directingJob.getRequestId());
       assertEquals("retrieving_assets", directingJob.getState());
-      assertTrue(directingJob.isPending());
 
-      // Wait until it is completed.
-      while(directingJob.isPending()) {
-        sleep(3000);
-        apiClient.reload(directingJob);
-        assertFalse(directingJob.isFailed());
-      }
+      waitForJobCompletion(directingJob);
 
       // Job is complete!
       assertTrue(directingJob.isCompleted());
@@ -205,20 +282,18 @@ public class ApiClientIntegrationTest extends TestCase {
   }
 
   protected RenderingJob createRenderingJob() {
-    DirectingJob directingJob = createDirectingJob(); 
+    DirectingJob directingJob = createDirectingJob();
     RenderingJob renderingJob = null;
     RenderingManifest renderingManifest = RenderingManifestFactory.newInstance();
-  
+
     try {
       renderingManifest.setStoryboard(directingJob.getStoryboard());
-      renderingJob = apiClient.render(renderingManifest); 
-      assertTrue(renderingJob.isPending());
+      renderingJob = apiClient.render(renderingManifest);
       assertNotNull(renderingJob.getLocation());
       assertNotNull(renderingJob.getRequestId());
-      while(renderingJob.isPending()) {
-        sleep(3000);
-        apiClient.reload(renderingJob);
-      }
+
+      waitForJobCompletion(renderingJob);
+
       assertTrue(renderingJob.isCompleted());
       assertNotNull(renderingJob.getVideo());
       assertNotNull(renderingJob.getStoryboard());
@@ -229,10 +304,27 @@ public class ApiClientIntegrationTest extends TestCase {
     return renderingJob;
   }
 
-  private void sleep(int time) {
-    try {
-      Thread.sleep(time);
+  /*
+   * TODO: Consider making this part of ApiClient; how long to sleep
+   * between polling attempts certainly is a best practices issue.
+   * Thought: should we poll for a very short amount of time initially
+   * (say 50 ms) and slowly increase the polling interval (adaptive
+   * polling)?
+   */
+  private void waitForJobCompletion(BaseResource job) throws HttpException, HttpExpectationException, ContractException {
+    assertTrue(job.isPending());
+
+    while(job.isPending()) {
+      assertFalse(job.isCompleted());
+      assertFalse(job.isFailed());
+      try {
+        Thread.sleep(1000);
+      }
+      catch (Exception ignored) {}
+      apiClient.reload(job);
     }
-    catch (Exception ignored) {}
+
+    assertTrue(job.isCompleted() || job.isFailed());
+    assertEquals(job.isCompleted(), !job.isFailed());
   }
 }

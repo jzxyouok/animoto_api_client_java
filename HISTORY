@@ -1,5 +1,12 @@
 CHANGE NOTES 
 
+== 1.2.2
+
+* Performance improvement: the API now will use only Basic authentication, rather than trying without authentication first (and retrying with Basic upon receiving a 401 response)
+* The API now deals with unexpected status codes in a more robust fashion
+* The API now supports deleting storyboards.
+* The API now supports bundling/unbundling storyboards.
+
 == 1.2.1
 
 * Minor update to reference official domain of platform.animoto.com.
