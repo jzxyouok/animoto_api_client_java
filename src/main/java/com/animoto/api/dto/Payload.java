@@ -49,6 +49,10 @@ public class Payload {
     return storyboardBundlingJob;
   }
 
+  public StoryboardUnbundlingJob getStoryboardUnbundlingJob() {
+    return storyboardUnbundlingJob;
+  }
+
   /**
    * Get the associated BaseResource based on the Class you pass in.
    */

@@ -35,6 +35,9 @@ public class ApiCommand {
     else if (baseResource instanceof StoryboardBundlingJob) {
       setEndpoint("storyboard_bundling");
     }
+    else if (baseResource instanceof StoryboardUnbundlingJob) {
+      setEndpoint("storyboard_unbundling");
+    }
   }
 
   public BaseResource getBaseResource() {

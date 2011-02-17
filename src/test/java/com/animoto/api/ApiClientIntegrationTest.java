@@ -52,6 +52,7 @@ public class ApiClientIntegrationTest extends TestCase {
 
     try {
       apiClient.delete(storyboard); // Should fail (already deleted)
+      fail("No exception when deleting storyboard twice!");
     } catch(HttpExpectationException e) {
       System.out.println("Expected exception when deleting storyboard twice: " + e);
       assertEquals(e.getReceivedCode(), HttpStatus.SC_GONE);
@@ -59,6 +60,7 @@ public class ApiClientIntegrationTest extends TestCase {
 
     try {
       apiClient.reload(storyboard); // Should fail, since we deleted the storyboad
+      fail("No exception when trying to reload after delete!");
     } catch(HttpExpectationException e) {
       System.out.println("Expected exception when trying reload after delete: " + e);
       assertEquals(e.getReceivedCode(), HttpStatus.SC_GONE);
@@ -79,7 +81,15 @@ public class ApiClientIntegrationTest extends TestCase {
     }
   }
 
-  public void testBundle() throws HttpExpectationException, HttpException, ContractException {
+  public void testBundlingUnbundling() throws HttpExpectationException, HttpException, ContractException {
+    /*
+     * We'll test the full cycle:
+     * * Create a directing job
+     * * Bundle
+     * * Delete the job
+     * * Unbundle
+     * * Render
+     */
     DirectingJob directingJob = createDirectingJob();
     Storyboard storyboard = directingJob.getStoryboard();
 
@@ -101,12 +111,37 @@ public class ApiClientIntegrationTest extends TestCase {
 
     System.out.println("Created storyboard bundle: " + bundleUrl);
 
-/*    apiClient.delete(storyboard);
+    apiClient.delete(storyboard);
+
+    try {
+      apiClient.reload(storyboard); // Should fail, since we deleted the storyboad
+      fail("No exception when trying to reload after delete!");
+    } catch(HttpExpectationException e) {
+      assertEquals(e.getReceivedCode(), HttpStatus.SC_GONE);
+    }
 
     StoryboardUnbundlingManifest unBundlingManifest = new StoryboardUnbundlingManifest();
     unBundlingManifest.setBundleUrl(bundleUrl);
     StoryboardUnbundlingJob unbundlingJob = apiClient.unbundle(unBundlingManifest);
-    waitForJobCompletion(unbundlingJob);*/
+
+    waitForJobCompletion(unbundlingJob);
+
+    assertTrue(unbundlingJob.isCompleted());
+
+    System.out.println("Unbundled " + bundleUrl + " to " + unbundlingJob.getStoryboard().getLocation());
+
+    apiClient.reload(unbundlingJob.getStoryboard());
+
+    RenderingManifest renderingManifest = RenderingManifestFactory.newInstance();
+    renderingManifest.setStoryboard(unbundlingJob.getStoryboard());
+    RenderingJob renderingJob = apiClient.render(renderingManifest);
+
+    waitForJobCompletion(renderingJob);
+
+    assertTrue(renderingJob.isCompleted());
+    assertNotNull(renderingJob.getVideo());
+
+    System.out.println("Rendered unbundling job to " + renderingJob.getVideo().getLocation());
   }
 
   public void testStoryboard() {
