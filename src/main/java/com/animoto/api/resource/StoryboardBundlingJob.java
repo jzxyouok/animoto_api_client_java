@@ -2,19 +2,20 @@ package com.animoto.api.resource;
 
 import com.animoto.api.Jsonable;
 import com.animoto.api.StoryboardBundlingManifest;
+import com.animoto.api.exception.ContractException;
 
 /**
  * A StoryboardBundlingJob represents the status of your storyboardBundling job on the API.<p/>
  *
  * You will need to call ApiClient.reload() in order to obtain the latest information from API.<p/>
  *
- * When the directing job is complete, a StoryboardBundle should be available.
+ * When the bundling job is complete, a StoryboardBundle should be available.
  *
- * @see com.animoto.api.ApiClient
- * @see StoryboardBundle
+ * @see com.animoto.api.ApiClient.bundle
  */
 public class StoryboardBundlingJob extends BaseResource implements Jsonable {
   private StoryboardBundlingManifest storyboardBundlingManifest;
+  private String bundleUrl;
 
   public String getContentType() {
     return "application/vnd.animoto.storyboard_bundling_manifest-v1+json";
@@ -32,16 +33,20 @@ public class StoryboardBundlingJob extends BaseResource implements Jsonable {
     return storyboardBundlingManifest;
   }
 
+  public String getBundleUrl() {
+    return bundleUrl;
+  }
+
   public String toJson() {
     return newGson().toJson(new Container(this));
   }
 
-  protected boolean containsStoryboard() {
-    return false;
-  }
-
-  protected boolean containsVideo() {
-    return false;
+  @Override
+  protected void onComplete() throws ContractException {
+    bundleUrl = getLinks().get("bundle_url");
+    if (bundleUrl == null) {
+      throw new ContractException("Expected Bundle URL to be present.");
+    }
   }
 
   /**

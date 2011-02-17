@@ -2,7 +2,6 @@ package com.animoto.api;
 
 import junit.framework.TestCase;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -18,16 +17,15 @@ import com.animoto.api.resource.RenderingJob;
 import com.animoto.api.resource.DirectingAndRenderingJob;
 import com.animoto.api.resource.Storyboard;
 import com.animoto.api.resource.StoryboardBundlingJob;
+import com.animoto.api.resource.StoryboardUnbundlingJob;
 import com.animoto.api.resource.Video;
 
 import com.animoto.api.DirectingManifest;
 import com.animoto.api.RenderingManifest;
 import com.animoto.api.RenderingParameters;
 
-import com.animoto.api.visual.TitleCard;
 import com.animoto.api.visual.Image;
 
-import com.animoto.api.exception.ApiException;
 import com.animoto.api.exception.ContractException;
 import com.animoto.api.exception.HttpExpectationException;
 import com.animoto.api.exception.HttpException;
@@ -85,17 +83,27 @@ public class ApiClientIntegrationTest extends TestCase {
     DirectingJob directingJob = createDirectingJob();
     Storyboard storyboard = directingJob.getStoryboard();
 
-    StoryboardBundlingManifest manifest = new StoryboardBundlingManifest();
-    manifest.setStoryboard(storyboard);
+    StoryboardBundlingManifest bundlingManifest = new StoryboardBundlingManifest();
+    bundlingManifest.setStoryboard(storyboard);
 
-    StoryboardBundlingJob bundlingJob = apiClient.bundle(manifest);
+    StoryboardBundlingJob bundlingJob = apiClient.bundle(bundlingManifest);
 
     assertNotNull(bundlingJob);
     assertNotNull(bundlingJob.getLocation());
     assertNotNull(bundlingJob.getRequestId());
-    //assertEquals("bundling", directingJob.getState());
+    assertEquals("bundling", bundlingJob.getState());
 
-    //waitForJobCompletion(bundlingJob);
+    waitForJobCompletion(bundlingJob);
+
+    if(bundlingJob.isCompleted()) {
+      String bundleUrl = bundlingJob.getBundleUrl();
+      apiClient.delete(storyboard);
+
+      StoryboardUnbundlingManifest unBundlingManifest = new StoryboardUnbundlingManifest();
+      unBundlingManifest.setBundleUrl(bundleUrl);
+      StoryboardUnbundlingJob unbundlingJob = apiClient.unbundle(unBundlingManifest);
+      waitForJobCompletion(unbundlingJob);
+    }
   }
 
   public void testStoryboard() {

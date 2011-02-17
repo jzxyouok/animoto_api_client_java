@@ -11,6 +11,7 @@ import com.animoto.api.resource.DirectingJob;
 import com.animoto.api.resource.RenderingJob;
 import com.animoto.api.resource.DirectingAndRenderingJob;
 import com.animoto.api.resource.StoryboardBundlingJob;
+import com.animoto.api.resource.StoryboardUnbundlingJob;
 import com.animoto.api.util.StringUtil;
 import com.animoto.api.DirectingManifest;
 import com.animoto.api.RenderingManifest;
@@ -153,6 +154,28 @@ public class ApiClient {
   public StoryboardBundlingJob bundle(StoryboardBundlingManifest manifest, ApiCommand apiCommand) throws HttpExpectationException, HttpException, ContractException {
     StoryboardBundlingJob job = new StoryboardBundlingJob();
     job.setStoryboardBundlingManifest(manifest);
+    apiCommand.setBaseResource(job);
+    executeApiCommandAndExpectHttp201(apiCommand);
+    return job;
+  }
+
+  /**
+   * @see unbundle(StoryboardUnbundlingManifest, ApiCommand)
+   */
+  public StoryboardUnbundlingJob unbundle(StoryboardUnbundlingManifest manifest) throws HttpExpectationException, HttpException, ContractException {
+    return unbundle(manifest, new ApiCommand());
+  }
+
+  /**
+   * Instruct Animoto to unbundle all resources associated with the bundle
+   * referenced by the manifest, so that work on the video can be recommenced.
+   *
+   * @param manifest Contains the bundle URL
+   * @return the unbundling job, which can be polled for completion (and then queried for the storyboard)
+   */
+  public StoryboardUnbundlingJob unbundle(StoryboardUnbundlingManifest manifest, ApiCommand apiCommand) throws HttpExpectationException, HttpException, ContractException {
+    StoryboardUnbundlingJob job = new StoryboardUnbundlingJob();
+    job.setStoryboardUnbundlingManifest(manifest);
     apiCommand.setBaseResource(job);
     executeApiCommandAndExpectHttp201(apiCommand);
     return job;

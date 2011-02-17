@@ -9,6 +9,7 @@ public class Payload {
   private RenderingJob renderingJob;
   private DirectingAndRenderingJob directingAndRenderingJob;
   private StoryboardBundlingJob storyboardBundlingJob;
+  private StoryboardUnbundlingJob storyboardUnbundlingJob;
   private Storyboard storyboard;
   private Video video;
 

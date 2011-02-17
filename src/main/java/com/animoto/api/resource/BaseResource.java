@@ -287,6 +287,13 @@ public abstract class BaseResource implements Resource {
     dtoBaseResource = getResponse().getPayload().getBaseResource(this.getClass());
     doErrorableBeanCopy(dtoBaseResource);
 
+    if(isCompleted()) {
+      onComplete();
+    }
+
+    /*
+     * TODO: populateStoryboard, populateVideo probably should be refactored into onComplete
+     */
     if (containsStoryboard() == true) {
       populateStoryboard();
     }
@@ -295,6 +302,10 @@ public abstract class BaseResource implements Resource {
       populateVideo();
     }
     return apiResponse;
+  }
+
+  protected void onComplete() throws ContractException {
+
   }
 
   /**
