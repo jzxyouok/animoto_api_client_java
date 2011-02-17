@@ -120,9 +120,9 @@ public class ApiClientIntegrationTest extends TestCase {
       assertEquals(e.getReceivedCode(), HttpStatus.SC_GONE);
     }
 
-    StoryboardUnbundlingManifest unBundlingManifest = new StoryboardUnbundlingManifest();
-    unBundlingManifest.setBundleUrl(bundleUrl);
-    StoryboardUnbundlingJob unbundlingJob = apiClient.unbundle(unBundlingManifest);
+    StoryboardUnbundlingManifest unbundlingManifest = new StoryboardUnbundlingManifest();
+    unbundlingManifest.setBundleUrl(bundleUrl);
+    StoryboardUnbundlingJob unbundlingJob = apiClient.unbundle(unbundlingManifest);
 
     waitForJobCompletion(unbundlingJob);
 

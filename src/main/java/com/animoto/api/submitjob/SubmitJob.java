@@ -88,11 +88,7 @@ public class SubmitJob {
       songUrl_ = commandLine.getOptionValue("song");
     }
 
-    if (host != null) {
-      client_ = new ApiClient(key, secret, host);
-    } else {
-      client_ = new ApiClient(key, secret);
-    }
+    client_ = new ApiClient(key, secret, host);
 
     if(jobType_ == JobType.DIRECT_AND_RENDER) {
       if(songUrl_ == null) {
@@ -225,12 +221,12 @@ public class SubmitJob {
     addRequiredOption(options, "j", "job-type", true, "direct or direct-and-render");
     addRequiredOption(options, "k", "key", true, "Your Animoto API key");
     addRequiredOption(options, "x", "secret", true, "Your Animoto API secret");
+    addRequiredOption(options, "t", "host", true, "The API host to communicate to");
 
     options.addOption("h", "help", false, "display help");
     options.addOption("I", "image-file", true, "A file containing a list of (publicly accessible) image URLs, one per line");
     options.addOption("l", "loop", true, "Submit the job the specified number of times (only one job is in flight at any given time)");
     options.addOption("s", "song", true, "The (publicly accessible) URL of the video's song");
-    options.addOption("t", "host", true, "The API host to communicate to (default: https://api.animoto.com).");
 
     return options;
   }

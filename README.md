@@ -72,6 +72,11 @@ The project uses the basic Maven tasks:
 * `mvn javadoc:javadoc` - Generate Javadoc documentation locally.
 * `mvn assembly:assembly` - Generate one uber-JAR with all dependencies in the JAR. This is useful for running the CLI interface or SubmitJob.
 
+### Sample Code
+Some snippets have been provided below that demostrate the API's basic functionality.  It also will be useful to look at:
+    src/main/java/com/animoto/api/submitjob/SubmitJob.java
+    src/test/java/com/animoto/api/ApiClientIntegrationTest.java
+
 ### Creating a video using the Java client
 
 This example shows you how to create a video in one shot using a 
@@ -80,7 +85,7 @@ This example shows you how to create a video in one shot using a
     // Set up the api client
     ApiClient apiClient = ApiClientFactory.newInstance();
 
-    // Build a directing manifest with all the visuals and audio for the 
+    // Build a directing manifest with all the visuals and audio for the
     // video.
     DirectingManifest directingManifest = new DirectingManifest();
     Image image = new Image();
@@ -108,7 +113,7 @@ This example shows you how to create a video in one shot using a
     // Set the video title
     directingManifest.setTitle("My Animoto Video");
 
-    // Create a rendering manifest to control things like video resolution and 
+    // Create a rendering manifest to control things like video resolution and
     // framerate
     RenderingManifest renderingManifest = new RenderingManifest();
     RenderingParameters renderingParameters = new RenderingParameters();
@@ -184,6 +189,118 @@ Similarly, when you have a Video object, you must query the API to get all the i
     // Now we have critical Storyboard links and metadata! :)
     video.getLinks();
     video.getMetadata();
+
+### Bundling and Unbundling
+
+Bundling is a process used for exporting an Animoto storyboard. The bundling process packages
+up all the information used by Animoto to render videos into a single file, the storyboard
+bundle. This file is essentially just a zip file with a special structure. After a storyboard
+bundle has been created and retrieved by your system, the original storyboard can be deleted.
+Later, the storyboard bundle can be reconstituted into an Animoto storyboard so that videos may
+be rendered.  The following snippet demonstrates this functionality:
+
+    /*
+     * We'll test the full cycle:
+     * * Create a directing job
+     * * Bundle
+     * * Delete the job
+     * * Unbundle
+     * * Render
+     */
+    ApiClient apiClient = ApiClientFactory.newInstance();
+
+    // Build a directing manifest with all the visuals and audio for the 
+    // video.
+    DirectingManifest directingManifest = new DirectingManifest();
+
+    // Provide an image.
+    Image image = new Image();
+    image.setSourceUrl("http://api.client.java.animoto.s3.amazonaws.com/test_assets/image.jpg");
+    directingManifest.addVisual(image);
+
+    // Provide a song.
+    Song song = new Song();
+    song.setSourceUrl("http://api.client.java.animoto.s3.amazonaws.com/test_assets/song.mp3");
+    directingManifest.setSong(song);
+
+    // Provide a title card.
+    TitleCard titleCard = new TitleCard();
+    titleCard.setH1("hello");
+    titleCard.setH2("world");
+    directingManifest.addVisual(titleCard);
+
+    // Provide a video.
+    Footage footage = new Footage();
+    footage.setSourceUrl("http://api.client.java.animoto.s3.amazonaws.com/test_assets/footage.mp4");
+    directingManifest.addVisual(footage);
+
+    // Set the video title
+    directingManifest.setTitle("My Animoto Video");
+
+    DirectingJob directingJob = apiClient.direct(directingManifest);
+
+    while(!directingJob.isCompleted()) {
+      try {
+          Thread.sleep(1000);
+      } catch(InterruptedException e) {}
+      apiClient.reload(directingJob);
+    }
+
+    Storyboard storyboard = directingJob.getStoryboard();
+
+    StoryboardBundlingManifest bundlingManifest = new StoryboardBundlingManifest();
+    bundlingManifest.setStoryboard(storyboard);
+    StoryboardBundlingJob bundlingJob = apiClient.bundle(bundlingManifest);
+
+    while(!bundlingJob.isCompleted()) {
+      try {
+          Thread.sleep(1000);
+      } catch(InterruptedException e) {}
+      apiClient.reload(bundlingJob);
+    }
+
+    String bundleUrl = bundlingJob.getBundleUrl();
+    System.out.println("Created storyboard bundle: " + bundleUrl);
+
+    apiClient.delete(storyboard);
+
+    StoryboardUnbundlingManifest unbundlingManifest = new StoryboardUnbundlingManifest();
+    unbundlingManifest.setBundleUrl(bundleUrl);
+    StoryboardUnbundlingJob unbundlingJob = apiClient.unbundle(unbundlingManifest);
+
+    while(!unbundlingJob.isCompleted()) {
+      try {
+          Thread.sleep(1000);
+      } catch(InterruptedException e) {}
+      apiClient.reload(unbundlingJob);
+    }
+
+    System.out.println("Unbundled " + bundleUrl + " to " + unbundlingJob.getStoryboard().getLocation());
+
+    // Create a rendering manifest to control things like video resolution and
+    // framerate
+    RenderingManifest renderingManifest = new RenderingManifest();
+    RenderingParameters renderingParameters = new RenderingParameters();
+
+    // Setup our rendering profile.
+    renderingParameters.setFramerate(Framerate.F_30);
+    renderingParameters.setFormat(Format.H264);
+    renderingParameters.setResolution(Resolution.R_720P);
+
+    // Set the storyboard from the Directing Job into the Rendering Manifest.
+    renderingManifest.setRenderingParameters(renderingParameters);
+    renderingManifest.setStoryboard(unbundlingJob.getStoryboard());
+
+    RenderingJob renderingJob = apiClient.render(renderingManifest);
+
+    while(!renderingJob.isCompleted()) {
+      try {
+          Thread.sleep(1000);
+      } catch(InterruptedException e) {}
+      apiClient.reload(renderingJob);
+    }
+
+    System.out.println("Rendered unbundling job to " + renderingJob.getVideo().getLocation());
 
 ### Command Line Interface (CLI)
 
