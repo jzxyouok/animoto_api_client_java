@@ -95,15 +95,18 @@ public class ApiClientIntegrationTest extends TestCase {
 
     waitForJobCompletion(bundlingJob);
 
-    if(bundlingJob.isCompleted()) {
-      String bundleUrl = bundlingJob.getBundleUrl();
-      apiClient.delete(storyboard);
+    assertTrue(bundlingJob.isCompleted());
 
-      StoryboardUnbundlingManifest unBundlingManifest = new StoryboardUnbundlingManifest();
-      unBundlingManifest.setBundleUrl(bundleUrl);
-      StoryboardUnbundlingJob unbundlingJob = apiClient.unbundle(unBundlingManifest);
-      waitForJobCompletion(unbundlingJob);
-    }
+    String bundleUrl = bundlingJob.getBundleUrl();
+
+    System.out.println("Created storyboard bundle: " + bundleUrl);
+
+/*    apiClient.delete(storyboard);
+
+    StoryboardUnbundlingManifest unBundlingManifest = new StoryboardUnbundlingManifest();
+    unBundlingManifest.setBundleUrl(bundleUrl);
+    StoryboardUnbundlingJob unbundlingJob = apiClient.unbundle(unBundlingManifest);
+    waitForJobCompletion(unbundlingJob);*/
   }
 
   public void testStoryboard() {
@@ -157,7 +160,6 @@ public class ApiClientIntegrationTest extends TestCase {
 
   public void testRenderingRaisedException() throws Exception {
     DirectingJob directingJob = createDirectingJob();
-    RenderingJob renderingJob = null;
     RenderingManifest renderingManifest = new RenderingManifest();
     RenderingParameters renderingParameters = new RenderingParameters();
 
@@ -165,7 +167,7 @@ public class ApiClientIntegrationTest extends TestCase {
     renderingManifest.setStoryboard(directingJob.getStoryboard());
     renderingManifest.setRenderingParameters(renderingParameters);
     try {
-      renderingJob = apiClient.render(renderingManifest);
+      apiClient.render(renderingManifest);
       fail("Expected error from API!");
     }
     catch (HttpExpectationException e) {

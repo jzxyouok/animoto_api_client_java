@@ -43,7 +43,7 @@ public class StoryboardBundlingJob extends BaseResource implements Jsonable {
 
   @Override
   protected void onComplete() throws ContractException {
-    bundleUrl = getLinks().get("bundle_url");
+    bundleUrl = getLinks().get("bundle");
     if (bundleUrl == null) {
       throw new ContractException("Expected Bundle URL to be present.");
     }
