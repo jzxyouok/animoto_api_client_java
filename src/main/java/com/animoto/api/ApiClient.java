@@ -458,7 +458,7 @@ public class ApiClient {
 
   private HttpResponse doHttpPost(String url, String postBody, Map<String, String> headers, HttpRequestRetryHandler httpRequestRetryHandler, Collection<HttpRequestInterceptor> httpRequestInterceptors) throws IOException, UnsupportedEncodingException {
     HttpPost httpPost = new HttpPost(url);
-    httpPost.setEntity(new StringEntity(postBody));
+    httpPost.setEntity(new StringEntity(postBody, "utf-8"));
     return doHttpRequest(httpPost, headers, httpRequestRetryHandler, httpRequestInterceptors);
   }
 
@@ -475,8 +475,10 @@ public class ApiClient {
     }
 
     try {
+      //FIXME: do after platform v1.2 is released: headers.put("Content-Type", apiCommand.getBaseResource().getContentType() + "; charset=utf-8");
       headers.put("Content-Type", apiCommand.getBaseResource().getContentType());
       headers.put("Accept", apiCommand.getBaseResource().getAccept());
+      headers.put("Accept-Charset", "utf-8");
       httpResponse = doHttpPost(host + "/jobs/" + apiCommand.getEndpoint(),
         ((Jsonable) apiCommand.getBaseResource()).toJson(),
         headers,
