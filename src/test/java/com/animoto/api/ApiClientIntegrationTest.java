@@ -43,6 +43,10 @@ public class ApiClientIntegrationTest extends TestCase {
     createDirectingJob();
   }
 
+  public void testDirectingWithInternationalCharacters() {
+    createDirectingJob("Radical \u21A4 \u00D3");
+  }
+
   public void testDelete() throws HttpException, HttpExpectationException, ContractException {
     DirectingJob directingJob = createDirectingJob();
     Storyboard storyboard = directingJob.getStoryboard();
@@ -256,7 +260,13 @@ public class ApiClientIntegrationTest extends TestCase {
   }
 
   protected DirectingJob createDirectingJob() {
+    return createDirectingJob("Java API Client Integration Test Video");
+  }
+
+  protected DirectingJob createDirectingJob(String title) {
     DirectingManifest directingManifest = DirectingManifestFactory.newInstance();
+    directingManifest.setTitle(title);
+
     DirectingJob directingJob = null;
 
     try {
