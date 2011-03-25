@@ -44,7 +44,8 @@ public class ApiClientIntegrationTest extends TestCase {
   }
 
   public void testDirectingWithInternationalCharacters() {
-    createDirectingJob("Radical \u21A4 \u00D3");
+    boolean cover = false;
+    createDirectingJob("Radical title \u21A4 \u00D3", cover);
   }
 
   public void testDelete() throws HttpException, HttpExpectationException, ContractException {
@@ -94,7 +95,8 @@ public class ApiClientIntegrationTest extends TestCase {
      * * Unbundle
      * * Render
      */
-    DirectingJob directingJob = createDirectingJob();
+    boolean cover = true;
+    DirectingJob directingJob = createDirectingJob("BOOG", cover);
     Storyboard storyboard = directingJob.getStoryboard();
 
     StoryboardBundlingManifest bundlingManifest = new StoryboardBundlingManifest();
@@ -144,6 +146,8 @@ public class ApiClientIntegrationTest extends TestCase {
 
     assertTrue(renderingJob.isCompleted());
     assertNotNull(renderingJob.getVideo());
+
+    assertVideo(renderingJob.getVideo(), cover);
 
     System.out.println("Rendered unbundling job to " + renderingJob.getVideo().getLocation());
   }
@@ -226,14 +230,11 @@ public class ApiClientIntegrationTest extends TestCase {
   }
 
   public void testVideo() {
+    boolean cover = true;
     RenderingJob renderingJob = createRenderingJob();
-    Video video = null;
 
     try {
-      video = renderingJob.getVideo();
-      apiClient.reload(video);
-      assertNotNull(video.getLinks());
-      assertTrue(video.getLinks().size() > 0);
+      assertVideo(renderingJob.getVideo(), cover);
     }
     catch (Exception e) {
       fail(e.toString());
@@ -242,7 +243,8 @@ public class ApiClientIntegrationTest extends TestCase {
 
   public void testDirectingAndRendering() {
     DirectingAndRenderingJob directingAndRenderingJob;
-    DirectingManifest directingManifest = DirectingManifestFactory.newInstance();
+    boolean cover = false;
+    DirectingManifest directingManifest = DirectingManifestFactory.newInstance(cover);
     RenderingManifest renderingManifest = RenderingManifestFactory.newInstance();
 
     try {
@@ -253,6 +255,8 @@ public class ApiClientIntegrationTest extends TestCase {
       assertTrue(directingAndRenderingJob.isCompleted());
       assertNotNull(directingAndRenderingJob.getStoryboard());
       assertNotNull(directingAndRenderingJob.getVideo());
+
+      assertVideo(directingAndRenderingJob.getVideo(), cover);
     }
     catch (Exception e) {
       fail(e.toString());
@@ -260,10 +264,11 @@ public class ApiClientIntegrationTest extends TestCase {
   }
 
   protected DirectingJob createDirectingJob() {
-    return createDirectingJob("Java API Client Integration Test Video");
+    boolean cover = true;
+    return createDirectingJob("Java API Client Integration Test Video", cover);
   }
 
-  protected DirectingJob createDirectingJob(String title) {
+  protected DirectingJob createDirectingJob(String title, boolean cover) {
     DirectingManifest directingManifest = DirectingManifestFactory.newInstance();
     directingManifest.setTitle(title);
 
@@ -312,6 +317,22 @@ public class ApiClientIntegrationTest extends TestCase {
       fail(e.toString());
     }
     return renderingJob;
+  }
+
+  private void assertVideo(Video video, boolean cover) throws HttpException, HttpExpectationException, ContractException {
+    apiClient.reload(video);
+
+    assertNotNull(video.getLinks());
+    assertTrue(video.getLinks().size() > 0);
+
+    assertNotNull(video.getDownloadUrl());
+    assertNotNull(video.getRenderingParameters());
+
+    if(cover) {
+      assertNotNull(video.getCoverImageUrl());
+    } else {
+      assertNull(video.getCoverImageUrl());
+    }
   }
 
   /*
