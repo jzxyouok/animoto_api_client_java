@@ -15,6 +15,10 @@ public class Video extends BaseHttpGetOnlyResource {
     return true;
   }
 
+  /**
+   * A video is *NOT* required to have a cover image; if it doesn't, this
+   * method will return null.
+   */
   public String getCoverImageUrl() {
     return getLinks().get("cover_image");
   }
