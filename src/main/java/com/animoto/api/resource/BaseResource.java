@@ -149,9 +149,10 @@ public abstract class BaseResource implements Resource {
 
   /**
    * True if the state is "completed" from API.
+   * TODO: Separate out the job semantics from the resource semantics.
    */
   public boolean isCompleted() {
-    return "completed".equals(state);
+    return (state == null) || "completed".equals(state);
   }
 
   public void setLinks(Map<String, String> links) {
@@ -294,11 +295,11 @@ public abstract class BaseResource implements Resource {
     /*
      * TODO: populateStoryboard, populateVideo probably should be refactored into onComplete
      */
-    if (containsStoryboard() == true) {
+    if (containsStoryboard()) {
       populateStoryboard();
     }
 
-    if (containsVideo() == true) {
+    if (containsVideo()) {
       populateVideo();
     }
     return apiResponse;

@@ -27,6 +27,7 @@ import com.animoto.api.exception.ContractException;
 import com.animoto.api.exception.HttpException;
 import com.animoto.api.exception.HttpExpectationException;
 import com.animoto.api.resource.DirectingAndRenderingJob;
+import com.animoto.api.resource.Video;
 import com.animoto.api.visual.Image;
 import com.animoto.api.visual.TitleCard;
 
@@ -162,7 +163,11 @@ public class SubmitJob {
     if(directingAndRenderingJob.isFailed()) {
       System.out.println("Error!");
     } else {
-      System.out.println("Created video: " + directingAndRenderingJob.getVideo().getLocation());
+      Video video = directingAndRenderingJob.getVideo();
+      client_.reload(video);
+      System.out.println("Created Video Successfully!");
+      System.out.println("Download URL: " + video.getDownloadUrl());
+      System.out.println("Cover Image URL: " + video.getCoverImageUrl());
     }
   }
 
