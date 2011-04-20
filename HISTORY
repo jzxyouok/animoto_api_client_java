@@ -1,4 +1,10 @@
-CHANGE NOTES 
+CHANGE NOTES
+
+== 1.2.4
+* Cover image support (Animoto Platform 1.2)
+
+== 1.2.3
+* Fix the API's handling of international characters
 
 == 1.2.2
 
