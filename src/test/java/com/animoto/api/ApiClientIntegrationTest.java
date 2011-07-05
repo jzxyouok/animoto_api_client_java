@@ -330,7 +330,7 @@ public class ApiClientIntegrationTest extends TestCase {
   }
 
   protected RenderingJob createRenderingJob() {
-      return createRenderingJob(null);
+    return createRenderingJob(null);
   }
 
   protected RenderingJob createRenderingJob(Pacing pacing) {
