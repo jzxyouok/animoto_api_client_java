@@ -17,13 +17,13 @@ import com.animoto.api.enums.Style;
 public class DirectingManifest {
   private Visual[] visuals = new Visual[0];
   private String title;
-  private Pacing pacing = Pacing.DEFAULT;
+  private Pacing pacing = Pacing.AUTO;
   private Style style = Style.ORIGINAL;
   private Song song;
 
   /**
    * Add a visual to the manifest.
-   */ 
+   */
   public void addVisual(Visual visual) {
     /*
       Unfortunately, JSON serialization isn't happy with Collections so we use a typed array :/

@@ -31,6 +31,7 @@ import com.animoto.api.exception.HttpExpectationException;
 import com.animoto.api.exception.HttpException;
 
 import com.animoto.api.enums.Framerate;
+import com.animoto.api.enums.Pacing;
 
 public class ApiClientIntegrationTest extends TestCase {
   protected ApiClient apiClient = null;
@@ -41,6 +42,30 @@ public class ApiClientIntegrationTest extends TestCase {
 
   public void testDirecting() {
     createDirectingJob();
+  }
+
+  public void testPacing() {
+      boolean cover = true;
+
+      RenderingJob renderingJob = createRenderingJob(Pacing.VERY_SLOW);
+
+      try {
+        assertVideo(renderingJob.getVideo(), cover);
+        System.out.println("VERY_SLOW: " + renderingJob.getVideo().getLocation());
+      }
+      catch (Exception e) {
+        fail(e.toString());
+      }
+
+      renderingJob = createRenderingJob(Pacing.VERY_FAST);
+
+      try {
+        assertVideo(renderingJob.getVideo(), cover);
+        System.out.println("VERY_FAST: " + renderingJob.getVideo().getLocation());
+      }
+      catch (Exception e) {
+        fail(e.toString());
+      }
   }
 
   public void testDirectingWithInternationalCharacters() {
@@ -269,8 +294,16 @@ public class ApiClientIntegrationTest extends TestCase {
   }
 
   protected DirectingJob createDirectingJob(String title, boolean cover) {
+      return createDirectingJob(title, cover, null);
+  }
+
+  protected DirectingJob createDirectingJob(String title, boolean cover, Pacing pacing) {
     DirectingManifest directingManifest = DirectingManifestFactory.newInstance();
     directingManifest.setTitle(title);
+
+    if(pacing != null) {
+        directingManifest.setPacing(pacing);
+    }
 
     DirectingJob directingJob = null;
 
@@ -297,7 +330,11 @@ public class ApiClientIntegrationTest extends TestCase {
   }
 
   protected RenderingJob createRenderingJob() {
-    DirectingJob directingJob = createDirectingJob();
+    return createRenderingJob(null);
+  }
+
+  protected RenderingJob createRenderingJob(Pacing pacing) {
+    DirectingJob directingJob = createDirectingJob("Test", true, pacing);
     RenderingJob renderingJob = null;
     RenderingManifest renderingManifest = RenderingManifestFactory.newInstance();
 
