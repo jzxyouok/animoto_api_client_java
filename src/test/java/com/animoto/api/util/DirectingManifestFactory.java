@@ -4,8 +4,7 @@ import com.animoto.api.DirectingManifest;
 import com.animoto.api.Song;
 import com.animoto.api.visual.*;
 import com.animoto.api.enums.*;
-import com.animoto.api.Postroll;
-import com.animoto.api.CustomFootagePostroll;
+import com.animoto.api.postroll.*;
 
 public class DirectingManifestFactory {
   public static DirectingManifest newInstance(boolean cover) {
@@ -14,7 +13,7 @@ public class DirectingManifestFactory {
     TitleCard titleCard = new TitleCard();
     Footage footage = new Footage();
     Song song = new Song();
-    Postroll postroll = new Postroll();
+    Postroll postroll = new BasicPostroll();
 
     song.setSourceUrl("http://api.client.java.animoto.s3.amazonaws.com/test_assets/song.mp3");
     song.setDuration(new Float(120));

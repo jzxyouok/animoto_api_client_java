@@ -33,6 +33,8 @@ import com.animoto.api.exception.HttpException;
 import com.animoto.api.enums.Framerate;
 import com.animoto.api.enums.Pacing;
 
+import com.animoto.api.postroll.*;
+
 public class ApiClientIntegrationTest extends TestCase {
   protected ApiClient apiClient = null;
 
@@ -186,6 +188,20 @@ public class ApiClientIntegrationTest extends TestCase {
       assertNotNull(storyboard.getLinks());
       assertTrue(storyboard.getLinks().size() > 0);
       assertNotNull(storyboard.getMetadata());
+    }
+    catch (Exception e) {
+      fail(e.toString());
+    }
+  }
+
+  public void testPostroll() {
+    try {
+      DirectingJob directingJob = createDirectingJob();
+      DirectingManifest directingManifest = directingJob.getDirectingManifest();
+      CustomFootagePostroll postroll = (CustomFootagePostroll) directingJob.getDirectingManifest().getPostroll();
+
+      assertEquals("custom_footage", postroll.getTemplate());
+      assertNotNull(postroll.getSourceUrl());
     }
     catch (Exception e) {
       fail(e.toString());
