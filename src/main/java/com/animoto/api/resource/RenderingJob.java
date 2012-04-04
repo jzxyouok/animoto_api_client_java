@@ -24,7 +24,6 @@ import org.apache.http.HttpResponse;
  */
 public class RenderingJob extends BaseResource implements Jsonable {
   private RenderingManifest renderingManifest;
-  private Video video;
 
   public String getContentType() {
     return "application/vnd.animoto.rendering_manifest-v1+json";
