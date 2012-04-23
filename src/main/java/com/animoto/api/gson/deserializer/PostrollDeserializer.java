@@ -3,6 +3,7 @@ package com.animoto.api.gson.deserializer;
 import java.lang.reflect.*;
 
 import com.google.gson.*;
+import com.google.gson.JsonElement;
 
 import com.animoto.api.postroll.*;
 
@@ -13,14 +14,14 @@ public class PostrollDeserializer implements JsonDeserializer<Postroll> {
     }
     JsonObject jsonPostroll = json.getAsJsonObject();
     JsonElement jsonTemplate = jsonPostroll.get("template");
-    if (!jsonTemplate.isJsonPrimitive()) {
+    if ((jsonTemplate == null) || !(jsonTemplate.isJsonPrimitive() && jsonTemplate.getAsJsonPrimitive().isString())) {
       throw(new JsonParseException("Postroll value \"template\" is not expected type (String)"));
     }
     String template = jsonTemplate.getAsString();
     if (template.equals("custom_footage")) {
       CustomFootagePostroll postroll = new CustomFootagePostroll();
       JsonElement jsonSourceUrl = jsonPostroll.get("source_url");
-      if (!jsonSourceUrl.isJsonPrimitive()) {
+      if ((jsonSourceUrl == null) || !(jsonSourceUrl.isJsonPrimitive() && jsonSourceUrl.getAsJsonPrimitive().isString())) {
         throw(new JsonParseException("Postroll value \"source_url\" is not expected type (String)"));
       }
       postroll.setSourceUrl(jsonSourceUrl.getAsString());
