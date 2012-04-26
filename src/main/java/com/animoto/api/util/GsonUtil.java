@@ -1,6 +1,7 @@
 package com.animoto.api.util;
 
 import com.animoto.api.enums.*;
+import com.animoto.api.postroll.Postroll;
 import com.animoto.api.gson.serializer.*;
 import com.animoto.api.gson.deserializer.*;
 
@@ -21,6 +22,7 @@ public class GsonUtil {
     gsonBuilder.registerTypeAdapter(Framerate.class, new FramerateDeserializer());
     gsonBuilder.registerTypeAdapter(Format.class, new FormatDeserializer());
 
+    gsonBuilder.registerTypeAdapter(Postroll.class, new PostrollDeserializer());
     return gsonBuilder.create();
   }
 }

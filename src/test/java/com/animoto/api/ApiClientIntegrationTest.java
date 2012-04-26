@@ -33,6 +33,8 @@ import com.animoto.api.exception.HttpException;
 import com.animoto.api.enums.Framerate;
 import com.animoto.api.enums.Pacing;
 
+import com.animoto.api.postroll.*;
+
 public class ApiClientIntegrationTest extends TestCase {
   protected ApiClient apiClient = null;
 
@@ -192,6 +194,36 @@ public class ApiClientIntegrationTest extends TestCase {
     }
   }
 
+  public void testPostroll() {
+    try {
+      DirectingJob directingJob = createDirectingJob();
+      DirectingManifest directingManifest = directingJob.getDirectingManifest();
+      BasicPostroll postroll = (BasicPostroll) directingManifest.getPostroll();
+
+      assertNotNull(postroll);
+      assertNotNull(postroll.getTemplate());
+    }
+    catch (Exception e) {
+      fail(e.toString());
+    }
+  }
+
+  public void testCustomFootagePostroll() {
+    try {
+      String sourceUrl = "https://postrolls.com/postroll.mp4";
+      DirectingJob directingJob = createDirectingJobWithCustomFootagePostroll(sourceUrl);
+      DirectingManifest directingManifest = directingJob.getDirectingManifest();
+      CustomFootagePostroll postroll = (CustomFootagePostroll) directingJob.getDirectingManifest().getPostroll();
+
+      assertEquals("custom_footage", postroll.getTemplate());
+      assertNotNull(postroll.getSourceUrl());
+      assertEquals(sourceUrl, postroll.getSourceUrl());
+    }
+    catch (Exception e) {
+      fail(e.toString());
+    }
+  }
+
   public void testDirectingInterceptor() throws Exception {
     DirectingManifest directingManifest = DirectingManifestFactory.newInstance();
     List<HttpRequestInterceptor> list = new ArrayList<HttpRequestInterceptor>();
@@ -288,17 +320,28 @@ public class ApiClientIntegrationTest extends TestCase {
     }
   }
 
+  protected static final String DEFAULT_JOB_TITLE = "Java API Client Integration Test Video";
+
   protected DirectingJob createDirectingJob() {
     boolean cover = true;
-    return createDirectingJob("Java API Client Integration Test Video", cover);
+    return createDirectingJob(DEFAULT_JOB_TITLE, cover);
   }
 
   protected DirectingJob createDirectingJob(String title, boolean cover) {
-      return createDirectingJob(title, cover, null);
+    return createDirectingJob(title, cover, null);
   }
 
   protected DirectingJob createDirectingJob(String title, boolean cover, Pacing pacing) {
-    DirectingManifest directingManifest = DirectingManifestFactory.newInstance();
+    DirectingManifest manifest = DirectingManifestFactory.newInstance();
+    return createDirectingJobFromManifest(title, cover, pacing, manifest);
+  }
+
+  protected DirectingJob createDirectingJobWithCustomFootagePostroll(String sourceUrl) {
+    DirectingManifest manifest = DirectingManifestFactory.newInstanceWithCustomFootagePostroll(sourceUrl);
+    return createDirectingJobFromManifest(DEFAULT_JOB_TITLE, false, null, manifest);
+  }
+
+  protected DirectingJob createDirectingJobFromManifest(String title, boolean cover, Pacing pacing, DirectingManifest directingManifest) {
     directingManifest.setTitle(title);
 
     if(pacing != null) {

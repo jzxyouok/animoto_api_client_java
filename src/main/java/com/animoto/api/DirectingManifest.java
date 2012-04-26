@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import com.animoto.api.visual.Visual;
 import com.animoto.api.enums.Pacing;
 import com.animoto.api.enums.Style;
+import com.animoto.api.postroll.*;
 
 /**
  * A DirectingManifest is used to communicate the assets, resources, and metadata of your Animoto video.<p/>
@@ -20,6 +21,7 @@ public class DirectingManifest {
   private Pacing pacing = Pacing.AUTO;
   private Style style = Style.ORIGINAL;
   private Song song;
+  public  Postroll postroll = new BasicPostroll();
 
   /**
    * Add a visual to the manifest.
@@ -75,5 +77,13 @@ public class DirectingManifest {
 
   public Song getSong() {
     return song;
+  }
+
+  public void setPostroll(Postroll postroll) {
+    this.postroll = postroll;
+  }
+
+  public Postroll getPostroll() {
+    return postroll;
   }
 }

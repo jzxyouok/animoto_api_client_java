@@ -48,7 +48,8 @@ public class DirectingJobTest extends TestCase {
   }
 
   public void testToJson() throws ParseException {
-    DirectingManifest directingManifest = DirectingManifestFactory.newInstance();
+    String customFootageUrl = "http://partner.com/postroll.mp4";
+    DirectingManifest directingManifest = DirectingManifestFactory.newInstanceWithCustomFootagePostroll(customFootageUrl);
     String json = null;
 
     directingJob.setHttpCallback("http://partner.com/callback");
@@ -58,9 +59,9 @@ public class DirectingJobTest extends TestCase {
     json = directingJob.toJson();
     
     /*
-      Let's use JSON Simple to parse the JSON and validate it's correctness.
+      Let's use JSON Simple to parse the JSON and validate its correctness.
      */   
-    JSONObject jsonObject, jsonDirectingJob, jsonDirectingManifest, jsonVisual, jsonSong;
+    JSONObject jsonObject, jsonDirectingJob, jsonDirectingManifest, jsonVisual, jsonSong, jsonPostroll;
     JSONArray jsonVisuals;
 
     jsonObject = (JSONObject) new JSONParser().parse(json);
@@ -100,5 +101,9 @@ public class DirectingJobTest extends TestCase {
         fail("Unknown Visual Type");
       }
     }
+
+    jsonPostroll = (JSONObject) jsonDirectingManifest.get("postroll");
+    assertEquals("custom_footage", jsonPostroll.get("template"));
+    assertEquals(customFootageUrl, jsonPostroll.get("source_url"));
   } 
 }
