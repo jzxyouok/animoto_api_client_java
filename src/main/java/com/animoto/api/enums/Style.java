@@ -3,7 +3,7 @@ package com.animoto.api.enums;
 public enum Style {
 	ORIGINAL("original"),
 	MOTHERS_DAY_2011("mothers_day_2011"),
-	ELEGANCE("elegance_12"),
+	LAND_OF_THE_RISING_HEARTS("land_of_the_rising_hearts"),
 	VINTAGE("vintage"),
 	COSMIC_TIDINGS("cosmic_tidings"),
 	WONDERLAND_OF_SNOW("wonderland_of_snow"),
