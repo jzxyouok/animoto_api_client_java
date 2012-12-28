@@ -4,7 +4,7 @@ import com.animoto.api.postroll.Postroll;
 import com.animoto.api.Jsonable;
 
 public class CustomFootagePostroll extends Postroll implements Jsonable {
-  private String sourceUrl;
+  //  private String sourceUrl;
 
   public CustomFootagePostroll() {
     template = "custom_footage";

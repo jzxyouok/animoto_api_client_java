@@ -9,5 +9,6 @@ public class BasicPostroll extends Postroll implements Jsonable {
 
   public BasicPostroll() {
     template = BasicPostroll.POWERED_BY_ANIMOTO;
+    sourceUrl = null;
   }
 }
