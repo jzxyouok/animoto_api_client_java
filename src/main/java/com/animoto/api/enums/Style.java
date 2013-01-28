@@ -20,7 +20,14 @@ public enum Style {
 	THE_WINDING_VINE("mothers_day"),
 	POPUP_PANDEMONIUM("holiday_popup_pandemonium"),
 	STARRY_NIGHT("holiday_starry_night"),
-	RETRO_WHEEL("viewmaster");
+	RETRO_WHEEL("viewmaster"),
+	AUTUMN("autumn"),
+	PARTY("party"),
+	VINTAGE_INK("vintage_ink"),
+	FIREWORKS("fireworks"),
+	BRILLIANCE("elegant"),
+	EVENTS("events"),
+	LAND_OF_THE_RISING_HEARTS("land_of_the_rising_hearts");
 
   private String value;
 
