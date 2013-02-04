@@ -79,6 +79,22 @@ public class PostrollTest extends TestCase {
     assertEquals(sourceUrl, postroll.getSourceUrl());
   }
 
+  public void testCustomFootagePostrollStartTime() {
+    CustomFootagePostroll postroll = new CustomFootagePostroll();
+    Float startTime = 2.0f;
+    postroll.setStartTime(startTime);
+    System.out.println("hi" + startTime + "...." + postroll.getStartTime());
+    assertEquals(startTime, postroll.getStartTime());
+  }
+
+  public void testCustomFootagePostrollDuration() {
+    CustomFootagePostroll postroll = new CustomFootagePostroll();
+    Float Duration = 4.0f;
+    postroll.setDuration(Duration);
+
+    assertEquals(Duration, postroll.getDuration());
+  }
+
   public void testCustomFootagePostrollSerialization() {
     CustomFootagePostroll postroll = new CustomFootagePostroll();
     postroll.setSourceUrl(PostrollTest.DEFAULT_SOURCE_URL);
