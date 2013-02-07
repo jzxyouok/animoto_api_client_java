@@ -83,7 +83,7 @@ public class PostrollTest extends TestCase {
     CustomFootagePostroll postroll = new CustomFootagePostroll();
     Float startTime = 2.0f;
     postroll.setStartTime(startTime);
-    System.out.println("hi" + startTime + "...." + postroll.getStartTime());
+
     assertEquals(startTime, postroll.getStartTime());
   }
 
