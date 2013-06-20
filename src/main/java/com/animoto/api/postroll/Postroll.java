@@ -5,6 +5,9 @@ import com.google.gson.Gson;
 
 public abstract class Postroll implements Jsonable {
   protected String template;
+  protected String sourceUrl;
+  protected Float startTime;
+  protected Float duration;
 
   public void setTemplate(String template) {
     this.template = template;

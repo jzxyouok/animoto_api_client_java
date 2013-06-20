@@ -6,7 +6,7 @@
   <groupId>com.animoto.api</groupId>
   <artifactId>animoto-api</artifactId>
   <packaging>jar</packaging>
-  <version>1.3.0</version>
+  <version>1.3.2</version>
   <name>Animoto API Client</name>
   <url>http://animoto.com</url>
   <dependencies>

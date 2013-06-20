@@ -104,7 +104,7 @@ public class ApiClient {
   }
 
   public String getVersion() {
-    return "1.3.0";
+    return "1.3.2";
   }
 
   public String getUserAgent() {
