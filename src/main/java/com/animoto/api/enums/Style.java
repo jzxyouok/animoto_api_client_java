@@ -58,7 +58,7 @@ public enum Style {
     THE_FUTURE("the_future"),
     THE_PAGE_TURNER("vanessa_joy"),
     VIBRANCE("elegance_6"),
-    VINTAGE_VOYAGE("vinage");
+    VINTAGE_VOYAGE("vintage");
 
   private String value;
 
