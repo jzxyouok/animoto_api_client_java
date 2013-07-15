@@ -30,6 +30,7 @@ import com.animoto.api.resource.DirectingAndRenderingJob;
 import com.animoto.api.resource.Video;
 import com.animoto.api.visual.Image;
 import com.animoto.api.visual.TitleCard;
+import com.animoto.api.PartnerMetadata;
 
 /*
  * This program allows someone to dispatch a job to Animoto on the command-line, specifying
@@ -146,7 +147,10 @@ public class SubmitJob {
     renderingParameters.setResolution(Resolution.R_360P);
     renderingManifest.setRenderingParameters(renderingParameters);
 
-    DirectingAndRenderingJob directingAndRenderingJob = client_.directAndRender(directingManifest, renderingManifest);
+    PartnerMetadata partnerMetadata = new PartnerMetadata();
+    partnerMetadata.setPartnerUserId("123");
+
+    DirectingAndRenderingJob directingAndRenderingJob = client_.directAndRender(directingManifest, renderingManifest, partnerMetadata);
 
     while(directingAndRenderingJob.isPending()) {
       /*

@@ -12,7 +12,7 @@ import com.animoto.api.ApplicationData;
 
 public class PartnerMetadata{
   private String partnerUserId;
-  private boolean commercialUse;
+  private Boolean commercialUse;
   private String partnerIntent;
   private ApplicationData applicationData;
 
@@ -26,11 +26,11 @@ public class PartnerMetadata{
   }
 
 
-  public void setCommercialUse(boolean commercialUse) {
+  public void setCommercialUse(Boolean commercialUse) {
     this.commercialUse = commercialUse;
   }
 
-  public boolean getCommercialUse() {
+  public Boolean getCommercialUse() {
     return commercialUse;
   }
 
