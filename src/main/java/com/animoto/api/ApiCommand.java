@@ -4,6 +4,7 @@ import java.util.Collection;
 
 import com.animoto.api.resource.*;
 import com.animoto.api.enums.HttpCallbackFormat;
+import com.animoto.api.PartnerMetadata;
 
 import org.apache.http.HttpRequestInterceptor;
 import org.apache.http.client.HttpRequestRetryHandler;
@@ -16,6 +17,7 @@ public class ApiCommand {
   private HttpCallbackFormat httpCallbackFormat;
   private HttpRequestRetryHandler httpRequestRetryHandler;
   private Collection<HttpRequestInterceptor> httpRequestInterceptors;
+  private PartnerMetadata partnerMetadata;
 
   public void setBaseResource(BaseResource baseResource) {
     this.baseResource = baseResource;
@@ -66,6 +68,14 @@ public class ApiCommand {
 
   public HttpCallbackFormat getHttpCallbackFormat() {
     return httpCallbackFormat;
+  }
+
+  public void setPartnerMetadata(PartnerMetadata partnerMetadata){
+    this.partnerMetadata = partnerMetadata;
+  }
+
+  public PartnerMetadata getPartnerMetadata() {
+    return partnerMetadata;
   }
 
   public void setHttpRequestRetryHandler(HttpRequestRetryHandler httpRequestRetryHandler) {
