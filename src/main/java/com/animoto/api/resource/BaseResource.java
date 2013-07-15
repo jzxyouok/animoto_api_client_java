@@ -2,6 +2,7 @@ package com.animoto.api.resource;
 
 import com.animoto.api.ApiClient;
 import com.animoto.api.Metadata;
+import com.animoto.api.PartnerMetadata;
 import com.animoto.api.enums.HttpCallbackFormat;
 import com.animoto.api.util.GsonUtil;
 import com.animoto.api.util.StringUtil;
@@ -34,6 +35,7 @@ import com.google.gson.annotations.SerializedName;
 public abstract class BaseResource implements Resource {
   protected String httpCallback;
   protected HttpCallbackFormat httpCallbackFormat = HttpCallbackFormat.XML;
+  protected PartnerMetadata partnerMetadata; 
   protected String state;
   protected String requestId;
   protected Map<String, String> links = new HashMap<String, String>();
@@ -75,6 +77,13 @@ public abstract class BaseResource implements Resource {
     return httpCallback;
   }
 
+  public void setPartnerMetadata (PartnerMetadata partnerMetadata) {
+    this.partnerMetadata = partnerMetadata;
+  }
+
+  public PartnerMetadata getPartnerMetadata() {
+    return partnerMetadata;
+  }
   public void setHttpCallbackFormat(HttpCallbackFormat httpCallbackFormat) {
     this.httpCallbackFormat = httpCallbackFormat;
   }

@@ -218,6 +218,25 @@ public class ApiClient {
     return direct(directingManifest, new ApiCommand());
   }
 
+
+  /**
+   * Creates a directing job with PartnerMetadata.
+   *
+   * @param       directingManifest           The manifest payload to direct.
+   * @param       partnerMetadata             Contains the user & video information.
+   * @return      DirectingJob
+   * @exception   HttpExpectationException
+   * @exception   HttpException
+   * @exception   ContractException
+   */
+ 
+  public DirectingJob direct(DirectingManifest directingManifest, PartnerMetadata partnerMetadata) throws HttpExpectationException, HttpException, ContractException {
+    ApiCommand apiCommand = new ApiCommand();
+    apiCommand.setPartnerMetadata(partnerMetadata);
+    return direct(directingManifest, apiCommand);
+  }
+
+
   /**
    * Creates a directing job with http callbacks.
    *
@@ -293,6 +312,21 @@ public class ApiClient {
    */
   public RenderingJob render(RenderingManifest renderingManifest) throws HttpExpectationException, HttpException, ContractException {
     return render(renderingManifest, new ApiCommand());
+  }
+
+ /**
+   * Creates a rendering job with PartnerMetadata.
+   *
+   * @param       renderingManifest           The manifest payload to render.
+   * @param       partnerMetadata
+   * @exception   HttpExpectationException
+   * @exception   HttpExpectation
+   * @exception   ContractException
+   */
+  public RenderingJob render(RenderingManifest renderingManifest, PartnerMetadata partnerMetadata) throws HttpExpectationException, HttpException, ContractException {
+    ApiCommand apiCommand = new ApiCommand();
+    apiCommand.setPartnerMetadata(partnerMetadata);
+    return render(renderingManifest, apiCommand);
   }
 
   /**
