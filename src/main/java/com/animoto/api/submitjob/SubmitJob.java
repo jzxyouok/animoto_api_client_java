@@ -30,6 +30,7 @@ import com.animoto.api.resource.DirectingAndRenderingJob;
 import com.animoto.api.resource.Video;
 import com.animoto.api.visual.Image;
 import com.animoto.api.visual.TitleCard;
+import com.animoto.api.ApplicationData;
 import com.animoto.api.PartnerMetadata;
 
 /*
