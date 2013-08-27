@@ -15,7 +15,6 @@ public enum Style {
 	FIRE("elements_fire"),
 	EARTH("elements_earth"),
 	COLOR_FOLD("Cubist_style"),
-	COMING_UP_ROSES("valentines_2011"),
 	WRAPPING_SCRAPS("xmas-2010-style1"),
 	THE_WINDING_VINE("mothers_day"),
 	POPUP_PANDEMONIUM("holiday_popup_pandemonium"),
@@ -58,7 +57,16 @@ public enum Style {
     THE_FUTURE("the_future"),
     THE_PAGE_TURNER("vanessa_joy"),
     VIBRANCE("elegance_6"),
-    VINTAGE_VOYAGE("vintage");
+    VINTAGE_VOYAGE("vintage"),
+    BIG_BEAT("big_beat"),
+    THE_ARENA("the_arena"),
+    CLASSIC_BLACK("f_stoppers_black"),
+    CLASSIC_WHITE("f_stoppers_white"),
+    COMING_UP_ROSES("coming_up_roses"),
+    QUANTUM_LEAP("sagans_journey"),
+    SUPER_8("super_8"),
+    SENIOR_YEAR("sarah_petty"),
+    GLOBETROTTER("globetrotter");
 
   private String value;
 
