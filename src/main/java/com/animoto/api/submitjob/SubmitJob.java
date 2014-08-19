@@ -113,11 +113,13 @@ public class SubmitJob {
     // video.
     DirectingManifest directingManifest = new DirectingManifest();
 
+    // Style
+    directingManifest.setStyle("one_to_one");
+      
     // Song
     Song song = new Song();
     song.setSourceUrl(songUrl_);
     directingManifest.setSong(song);
-
     // Images
     for(String imageUrl : imageUrls_) {
       Image image = new Image();

@@ -5,7 +5,6 @@ import java.util.ArrayList;
 
 import com.animoto.api.visual.Visual;
 import com.animoto.api.enums.Pacing;
-import com.animoto.api.enums.Style;
 import com.animoto.api.postroll.*;
 
 /**
@@ -19,7 +18,7 @@ public class DirectingManifest {
   private Visual[] visuals = new Visual[0];
   private String title;
   private Pacing pacing = Pacing.AUTO;
-  private Style style = Style.ORIGINAL;
+  private String style = "original";
   private Song song;
   public  Postroll postroll = new BasicPostroll();
 
@@ -63,11 +62,11 @@ public class DirectingManifest {
     return pacing;
   }
 
-  public void setStyle(Style style) {
+  public void setStyle(String style) {
     this.style = style;
   }
 
-  public Style getStyle() {
+  public String getStyle() {
     return style;
   }
 

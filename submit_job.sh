@@ -1,3 +1,3 @@
 #!/bin/bash
 
-java -Dorg.apache.commons.logging.Log=org.apache.commons.logging.impl.SimpleLog -Dorg.apache.commons.logging.simplelog.log.org.apache.http=INFO -cp target/animoto-api-1.3.4-jar-with-dependencies.jar com.animoto.api.submitjob.SubmitJob $*
+java -Dorg.apache.commons.logging.Log=org.apache.commons.logging.impl.SimpleLog -Dorg.apache.commons.logging.simplelog.log.org.apache.http=INFO -cp target/animoto-api-1.3.5-jar-with-dependencies.jar com.animoto.api.submitjob.SubmitJob -j direct-and-render -k {key} -x {password} -t https://platform-sandbox.animoto.com -s http://s3-p.animoto.com/Song/jzMfYZeYWirq5AZT6a6atA/l.mp3 -I images.txt
